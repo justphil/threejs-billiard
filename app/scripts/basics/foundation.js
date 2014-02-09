@@ -44,6 +44,10 @@
 
     /* Simple class system */
     Hooray.Class = function(configObj, superClassConstructor) {
+        if (Hooray.isUndefined(configObj)) {
+            configObj = {};
+        }
+
         var constructor = Hooray.isFunction(configObj.init) ? configObj.init : function() {},
             isSuperClassConstructor = Hooray.isFunction(superClassConstructor),
             wrapper,
@@ -53,11 +57,11 @@
             var obj;
 
             if (!(this instanceof constructor)) {
-                console.log('new-operator forgotten!');
+                //console.log('new-operator forgotten!');
                 obj = Object.create(constructor.prototype);
             }
             else {
-                console.log('new-operator provided!');
+                //console.log('new-operator provided!');
                 obj = this;
             }
 
