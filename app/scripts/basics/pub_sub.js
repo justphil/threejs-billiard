@@ -3,6 +3,7 @@
 
     Hooray.PubSub = Hooray.Class({
         init: function() {
+            // hash of arrays of callback functions
             this.topics = {};
         },
 
