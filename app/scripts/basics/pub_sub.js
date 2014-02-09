@@ -37,18 +37,41 @@
         },
 
         publish: function(topic) {
-            var t = this.topics[topic],
+            var t       = this.topics[topic],
+                that    = this,
+                args    = Array.prototype.slice.call(arguments),
                 i;
 
             if (!Hooray.isUndefined(t)) {
                 i = t.length;
 
                 while (i--) {
-                    t[i].apply(this, arguments);
+                    // prevent mutable variable i to be accessible from closure by using IIFE
+                    (function() {
+                        var callbackFn = t[i];
+                        W.setTimeout(function() {
+                            callbackFn.apply(that, args.slice(1));
+                        }, 0);
+                    })();
                 }
             }
 
             return this;
+        },
+
+        /* _NOT_INTENDED_FOR_USE_ function for test purposes */
+        __getTopics: function() {
+            // return shallow copy of the internal data structure
+            var obj = {},
+                topic;
+
+            for (topic in this.topics) {
+                if (this.topics.hasOwnProperty(topic)) {
+                    obj[topic] = this.topics[topic];
+                }
+            }
+
+            return obj;
         }
     });
 })(window, Hooray);
