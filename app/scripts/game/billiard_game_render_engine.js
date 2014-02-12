@@ -13,7 +13,7 @@
             this.renderer = this.initRenderer(this.gameContainer);
 
             // create a new scene
-            this.scene = new THREE.Scene();
+            this.scene = new T.Scene();
 
             // create a camera, position it and add it to the scene
             this.camera = this.initCamera(this.gameContainer, this.scene);
@@ -29,7 +29,7 @@
         },
 
         initRenderer: function(gameContainer) {
-            var renderer = Detector.webgl ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
+            var renderer = Detector.webgl ? new T.WebGLRenderer() : new T.CanvasRenderer();
             renderer.setSize(gameContainer.width, gameContainer.height);
             gameContainer.domElement.appendChild(renderer.domElement);
 
@@ -45,7 +45,7 @@
                 bottom  = height / -2,
                 near    = 1,
                 far     = 1000,
-                camera  = new THREE.OrthographicCamera(
+                camera  = new T.OrthographicCamera(
                     left, right,
                     top, bottom,
                     near, far
@@ -64,6 +64,14 @@
 
         start: function() {
             Hooray.log('The Billiard.Game is about to start...');
+
+            var deferred = Q.defer();
+
+            W.setTimeout(function() {
+                deferred.resolve('threejs-billiard');
+            }, 2000);
+
+            return deferred.promise;
         }
     });
 })(window, THREE, Hooray);
