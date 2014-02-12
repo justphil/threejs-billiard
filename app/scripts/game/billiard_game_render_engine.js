@@ -4,13 +4,19 @@
     var Billiard = Hooray.Namespace('Billiard', 'Billiard');
     Billiard.GameRenderEngine = Hooray.Class({
         init: function(gameContainerId) {
-            console.log('A new Billiard.Game instance has been created within "'+gameContainerId+'"!');
+            Hooray.log('A new Billiard.Game instance has been created within "'+gameContainerId+'"!');
 
             // init gameContainer
             this.gameContainer = this.initGameContainer(gameContainerId);
 
             // init renderer
             this.renderer = this.initRenderer(this.gameContainer);
+
+            // create a new scene
+            this.scene = new THREE.Scene();
+
+            // create a camera, position it and add it to the scene
+            this.camera = this.initCamera(this.gameContainer, this.scene);
         },
 
         initGameContainer: function(gameContainerId) {
@@ -30,8 +36,34 @@
             return renderer;
         },
 
+        initCamera: function(gameContainer, scene) {
+            var width   = gameContainer.width,
+                height  = gameContainer.height,
+                left    = width / -2,
+                right   = width / 2,
+                top     = height / 2,
+                bottom  = height / -2,
+                near    = 1,
+                far     = 1000,
+                camera  = new THREE.OrthographicCamera(
+                    left, right,
+                    top, bottom,
+                    near, far
+                );
+
+            camera.position.z = 400;
+            scene.add(this.camera);
+
+            Hooray.log(
+                'Initializing camera! [left, right, top, bottom, near, far]',
+                left, right, top, bottom, near, far
+            );
+
+            return camera;
+        },
+
         start: function() {
-            console.log('The Billiard.Game is about to start...');
+            Hooray.log('The Billiard.Game is about to start...');
         }
     });
 })(window, THREE, Hooray);
