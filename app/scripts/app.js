@@ -4,7 +4,7 @@
     var game = new Billiard.Game('gameContainer', new Billiard.Rules.EightBall());
 
     W.onload = function() {
-        game.initGame().then(function() {
+        game.prepare().then(function() {
             Hooray.log('The game is completely set up and about to start!');
             game.start();
 

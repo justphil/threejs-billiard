@@ -10,7 +10,7 @@
             this.gameLoop = new Billiard.GameLoop(this.balls, this.gameRenderEngine);
         },
 
-        initGame: function() {
+        prepare: function() {
             var that = this;
             return this.gameRenderEngine.initGameRenderEngine(this.balls).then(function(renderFn) {
                 that.renderFn = renderFn;
@@ -39,7 +39,7 @@
 
         start: function() {
             if (Hooray.isUndefined(this.renderFn)) {
-                throw new Error('Cannot start uninitialized game! Please call initGame() before start().');
+                throw new Error('Cannot start uninitialized game! Please call prepare() before start().');
             }
             this.gameLoop.start(this.renderFn);
         },

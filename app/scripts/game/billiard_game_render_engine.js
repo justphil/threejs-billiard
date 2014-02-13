@@ -33,7 +33,7 @@
                 // create three.js sphere that represents a ball and add it to the scene
                 for (assetId in assets) {
                     if (assets.hasOwnProperty(assetId)) {
-                        geometry = new THREE.SphereGeometry(assets[assetId].radius, 32, 32);
+                        geometry = new THREE.SphereGeometry(assets[assetId].radius, 16, 16);
                         material = new THREE.MeshPhongMaterial({
                             map: mapHash[assetId]
                             //shininess: 52
