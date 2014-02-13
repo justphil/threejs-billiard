@@ -3,11 +3,12 @@
 
     var Billiard = Hooray.Namespace('Billiard', 'Billiard');
     Billiard.Game = Hooray.Class({
-        init: function(gameContainerId, rules) {
+        init: function(gameContainerId, rules, table) {
             Hooray.log('A new Billiard.Game instance has been created!');
             this.balls = this.initBalls(rules); // hash: ballId -> Billiard.Ball object
             this.gameRenderEngine = new Billiard.GameRenderEngine(gameContainerId);
-            this.gameLoop = new Billiard.GameLoop(this.balls, this.gameRenderEngine);
+            this.table = table;
+            this.gameLoop = new Billiard.GameLoop(this.gameRenderEngine, this.balls, this.table);
         },
 
         prepare: function() {

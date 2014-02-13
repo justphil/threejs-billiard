@@ -11,6 +11,10 @@
             this.radius = radius;
 
             // A Billiard.Ball object will be augmented with a mesh property during initialization!
+        },
+
+        translate: function() {
+
         }
     });
 })(window, Hooray);

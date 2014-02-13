@@ -1,7 +1,11 @@
 (function(W, Hooray) {
     "use strict";
 
-    var game = new Billiard.Game('gameContainer', new Billiard.Rules.EightBall());
+    var game = new Billiard.Game(
+        'gameContainer',
+        new Billiard.Rules.EightBall(),
+        new Billiard.Table.Default(300, 300)
+    );
 
     W.onload = function() {
         game.prepare().then(function() {
