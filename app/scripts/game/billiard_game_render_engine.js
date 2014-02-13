@@ -1,22 +1,61 @@
-(function(W, T, Hooray) {
+(function(W, Hooray) {
     "use strict";
 
     var Billiard = Hooray.Namespace('Billiard', 'Billiard');
     Billiard.GameRenderEngine = Hooray.Class({
         init: function(gameContainerId) {
-            Hooray.log('A new Billiard.Game instance has been created within "'+gameContainerId+'"!');
+            Hooray.log('A new Billiard.GameRenderEngine instance has been created within "'+gameContainerId+'"!');
 
             // init gameContainer
             this.gameContainer = this.initGameContainer(gameContainerId);
 
+            // init asset loader
+            this.assetLoader = new Billiard.AssetLoader();
+
             // init renderer
             this.renderer = this.initRenderer(this.gameContainer);
 
-            // create a new scene
-            this.scene = new T.Scene();
+            // init scene
+            this.scene = new THREE.Scene();
 
             // create a camera, position it and add it to the scene
             this.camera = this.initCamera(this.gameContainer, this.scene);
+
+            // create data structure for meshes (balls, etc.)
+            this.meshes = {};
+
+            // init light
+            this.light = this.initLight();
+        },
+
+        initGameRenderEngine: function(assets) {
+            var that = this;
+            var assetId, geometry, material, sphere;
+
+            return this.assetLoader.getMaps(Object.keys(assets)).then(function(mapHash) {
+                // create three.js sphere that represents a ball and add it to the scene
+                for (assetId in assets) {
+                    geometry = new THREE.SphereGeometry(assets[assetId].radius, 32, 32);
+                    material = new THREE.MeshPhongMaterial({
+                        map: mapHash[assetId],
+                        shininess: 52
+                        //color: 0x00FF00
+                    });
+                    sphere = new THREE.Mesh(geometry, material);
+                    sphere.position.x = assets[assetId].x;
+                    sphere.position.y = assets[assetId].y;
+                    that.scene.add(sphere);
+                    that.meshes[assetId] = sphere;
+                }
+
+                return function() {
+                    that.render();
+                };
+            });
+        },
+
+        render: function() {
+            this.renderer.render(this.scene, this.camera);
         },
 
         initGameContainer: function(gameContainerId) {
@@ -29,7 +68,7 @@
         },
 
         initRenderer: function(gameContainer) {
-            var renderer = Detector.webgl ? new T.WebGLRenderer() : new T.CanvasRenderer();
+            var renderer = Detector.webgl ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
             renderer.setSize(gameContainer.width, gameContainer.height);
             gameContainer.domElement.appendChild(renderer.domElement);
 
@@ -45,7 +84,7 @@
                 bottom  = height / -2,
                 near    = 1,
                 far     = 1000,
-                camera  = new T.OrthographicCamera(
+                camera  = new THREE.OrthographicCamera(
                     left, right,
                     top, bottom,
                     near, far
@@ -62,16 +101,12 @@
             return camera;
         },
 
-        start: function() {
-            Hooray.log('The Billiard.Game is about to start...');
+        initLight: function() {
+            var light = new THREE.DirectionalLight(0xFFFFFF, 1);
+            light.position.set(0, 0, 1);
+            this.scene.add(light);
 
-            var deferred = Q.defer();
-
-            W.setTimeout(function() {
-                deferred.resolve('threejs-billiard');
-            }, 2000);
-
-            return deferred.promise;
+            return light;
         }
     });
-})(window, THREE, Hooray);
+})(window, Hooray);
