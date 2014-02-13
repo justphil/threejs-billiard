@@ -5,7 +5,7 @@
 
     W.onload = function() {
         game.initGame().then(function(renderFn) {
-            Hooray.log('The game is completely set up and about to start!', renderFn);
+            Hooray.log('The game is completely set up and about to start!');
             renderFn();
         });
     };

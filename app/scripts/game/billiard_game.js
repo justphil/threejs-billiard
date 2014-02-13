@@ -5,8 +5,6 @@
     Billiard.Game = Hooray.Class({
         init: function(gameContainerId, rules) {
             Hooray.log('A new Billiard.Game instance has been created!');
-            this.gameContainerId = gameContainerId;
-            this.rules = rules;
             this.balls = this.initBalls(rules); // hash: ballId -> Billiard.Ball object
             this.gameRenderEngine = new Billiard.GameRenderEngine(gameContainerId);
         },

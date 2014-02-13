@@ -35,17 +35,20 @@
             return this.assetLoader.getMaps(Object.keys(assets)).then(function(mapHash) {
                 // create three.js sphere that represents a ball and add it to the scene
                 for (assetId in assets) {
-                    geometry = new THREE.SphereGeometry(assets[assetId].radius, 32, 32);
-                    material = new THREE.MeshPhongMaterial({
-                        map: mapHash[assetId],
-                        shininess: 52
-                        //color: 0x00FF00
-                    });
-                    sphere = new THREE.Mesh(geometry, material);
-                    sphere.position.x = assets[assetId].x;
-                    sphere.position.y = assets[assetId].y;
-                    that.scene.add(sphere);
-                    that.meshes[assetId] = sphere;
+                    if (assets.hasOwnProperty(assetId)) {
+                        geometry = new THREE.SphereGeometry(assets[assetId].radius, 32, 32);
+                        material = new THREE.MeshPhongMaterial({
+                            map: mapHash[assetId]
+                            //shininess: 52
+                            //color: 0x00FF00
+                        });
+                        sphere = new THREE.Mesh(geometry, material);
+                        sphere.position.x = assets[assetId].x;
+                        sphere.position.y = assets[assetId].y;
+
+                        that.scene.add(sphere);
+                        that.meshes[assetId] = sphere;
+                    }
                 }
 
                 return function() {
