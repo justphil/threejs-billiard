@@ -21,9 +21,6 @@
             // create a camera, position it and add it to the scene
             this.camera = this.initCamera(this.gameContainer, this.scene);
 
-            // create data structure for meshes (balls, etc.)
-            this.meshes = {};
-
             // init light
             this.light = this.initLight();
         },
@@ -47,7 +44,9 @@
                         sphere.position.y = assets[assetId].y;
 
                         that.scene.add(sphere);
-                        that.meshes[assetId] = sphere;
+
+                        // augment the asset with the created mesh
+                        assets[assetId].mesh = sphere;
                     }
                 }
 

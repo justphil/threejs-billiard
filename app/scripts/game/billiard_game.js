@@ -7,10 +7,14 @@
             Hooray.log('A new Billiard.Game instance has been created!');
             this.balls = this.initBalls(rules); // hash: ballId -> Billiard.Ball object
             this.gameRenderEngine = new Billiard.GameRenderEngine(gameContainerId);
+            this.gameLoop = new Billiard.GameLoop(this.balls, this.gameRenderEngine);
         },
 
         initGame: function() {
-            return this.gameRenderEngine.initGameRenderEngine(this.balls);
+            var that = this;
+            return this.gameRenderEngine.initGameRenderEngine(this.balls).then(function(renderFn) {
+                that.renderFn = renderFn;
+            });
         },
 
         initBalls: function(rules) {
@@ -31,6 +35,17 @@
             }
 
             return balls;
+        },
+
+        start: function() {
+            if (Hooray.isUndefined(this.renderFn)) {
+                throw new Error('Cannot start uninitialized game! Please call initGame() before start().');
+            }
+            this.gameLoop.start(this.renderFn);
+        },
+
+        stop: function() {
+            this.gameLoop.stop();
         }
     });
 })(window, THREE, Hooray);
