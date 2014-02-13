@@ -8,22 +8,22 @@
 
             this.radius = 20;
             this.balls = {
-                'images/ball0.jpg' : {x: -480 + this.radius, y: 0},
-                'images/ball1.jpg' : {x: -440 + this.radius, y: 0},
-                'images/ball2.jpg' : {x: -400 + this.radius, y: 0},
-                'images/ball3.jpg' : {x: -360 + this.radius, y: 0},
-                'images/ball4.jpg' : {x: -320 + this.radius, y: 0},
-                'images/ball5.jpg' : {x: -280 + this.radius, y: 0},
-                'images/ball6.jpg' : {x: -240 + this.radius, y: 0},
-                'images/ball7.jpg' : {x: -200 + this.radius, y: 0},
-                'images/ball8.jpg' : {x: -160 + this.radius, y: 0},
-                'images/ball9.jpg' : {x: -120 + this.radius, y: 0},
-                'images/ball10.jpg': {x: -80 + this.radius, y: 0},
-                'images/ball11.jpg': {x: -40 + this.radius, y: 0},
-                'images/ball12.jpg': {x: 0 + this.radius, y: 0},
-                'images/ball13.jpg': {x: 40 + this.radius, y: 0},
-                'images/ball14.jpg': {x: 80 + this.radius, y: 0},
-                'images/ball15.jpg': {x: 120 + this.radius, y: 0}
+                'images/ball0.jpg' : {x: -480 + (0*2+1)*this.radius, y: 0},
+                'images/ball1.jpg' : {x: -480 + (1*2+1)*this.radius, y: 0},
+                'images/ball2.jpg' : {x: -480 + (2*2+1)*this.radius, y: 0},
+                'images/ball3.jpg' : {x: -480 + (3*2+1)*this.radius, y: 0},
+                'images/ball4.jpg' : {x: -480 + (4*2+1)*this.radius, y: 0},
+                'images/ball5.jpg' : {x: -480 + (5*2+1)*this.radius, y: 0},
+                'images/ball6.jpg' : {x: -480 + (6*2+1)*this.radius, y: 0},
+                'images/ball7.jpg' : {x: -480 + (7*2+1)*this.radius, y: 0},
+                'images/ball8.jpg' : {x: -480 + (8*2+1)*this.radius, y: 0},
+                'images/ball9.jpg' : {x: -480 + (9*2+1)*this.radius, y: 0},
+                'images/ball10.jpg': {x: -480 + (10*2+1)*this.radius, y: 0},
+                'images/ball11.jpg': {x: -480 + (11*2+1)*this.radius, y: 0},
+                'images/ball12.jpg': {x: -480 + (12*2+1)*this.radius, y: 0},
+                'images/ball13.jpg': {x: -480 + (13*2+1)*this.radius, y: 0},
+                'images/ball14.jpg': {x: -480 + (14*2+1)*this.radius, y: 0},
+                'images/ball15.jpg': {x: -480 + (15*2+1)*this.radius, y: 0}
             };
         },
 
