@@ -6,10 +6,10 @@
         init: function(gameRenderEngine, balls, table) {
             Hooray.log('A new Billiard.GameLoop instance has been created!');
             this.gameRenderEngine = gameRenderEngine;
-            this.balls      = balls;
+            this.balls = balls;
             this.table = table;
 
-            // create an array out of the balls hash due fixed order
+            // create an array out of the balls hash due fixed order and easier iteration in mainGameLoop
             this.ballsArray = [];
             for (var ballId in this.balls) {
                 if (this.balls.hasOwnProperty(ballId)) {
@@ -29,6 +29,7 @@
                 b = ba[i];
                 b.translate();
                 b.rotate();
+                b.handleCushionCollision(this.table);
             }
         },
 
