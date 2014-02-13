@@ -10,11 +10,22 @@
             this.initY  = initY;
             this.radius = radius;
 
-            // A Billiard.Ball object will be augmented with a mesh property during initialization!
+            this.vX     = 1;
+            this.vY     = 0;
+
+            this.rotationHelper = Billiard.Game.RotationHelper;
+
+            // !!! A Billiard.Ball object will be augmented with a mesh property during initialization !!!
         },
 
         translate: function() {
+            this.mesh.position.x += this.vX;
+            this.mesh.position.y += this.vY;
+        },
 
+        rotate: function() {
+            this.rotationHelper.rotateAroundWorldAxisX(this.mesh, -this.vY / this.radius);
+            this.rotationHelper.rotateAroundWorldAxisY(this.mesh, this.vX / this.radius);
         }
     });
 })(window, Hooray);

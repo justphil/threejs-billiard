@@ -23,10 +23,12 @@
         /* #### #### #### */
 
         mainGameLoop: function() {
-            var i, n,
+            var i, n, b,
                 ba = this.ballsArray;
             for (i = 0, n = ba.length; i < n; i++) {
-                ba[i].translate();
+                b = ba[i];
+                b.translate();
+                b.rotate();
             }
         },
 
