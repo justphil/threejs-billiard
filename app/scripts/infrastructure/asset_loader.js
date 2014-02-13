@@ -49,10 +49,10 @@
         },
 
         getMaps: function(urlArray) {
-            var i = urlArray.length,
-                promises = [],
-                n;
-            while(i--) {
+            var promises = [],
+                i, n;
+
+            for (i = 0, n = urlArray.length; i < n; i++) {
                 promises.push(
                     this.getMap(urlArray[i])
                 );
