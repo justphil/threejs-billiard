@@ -11,7 +11,7 @@
     }
 
 
-    var RotationHelper = Hooray.Namespace('Billiard.Game.RotationHelper', 'Billiard');
+    var RotationHelper = Hooray.Namespace('Billiard.Helper.RotationHelper', 'Billiard');
     RotationHelper.rotateAroundWorldAxisY = function(object, radians) {
         rotateAroundWorldAxis(object, normalizedYAxisVector, radians);
     };

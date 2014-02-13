@@ -13,7 +13,7 @@
             this.vX     = 1;
             this.vY     = 0;
 
-            this.rotationHelper = Billiard.Game.RotationHelper;
+            this.rotationHelper = Billiard.Helper.RotationHelper;
 
             // !!! A Billiard.Ball object will be augmented with a mesh property during initialization !!!
         },
