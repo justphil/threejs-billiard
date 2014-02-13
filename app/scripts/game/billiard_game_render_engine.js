@@ -40,8 +40,8 @@
                             //color: 0x00FF00
                         });
                         sphere = new THREE.Mesh(geometry, material);
-                        sphere.position.x = assets[assetId].x;
-                        sphere.position.y = assets[assetId].y;
+                        sphere.position.x = assets[assetId].initX;
+                        sphere.position.y = assets[assetId].initY;
 
                         that.scene.add(sphere);
 
