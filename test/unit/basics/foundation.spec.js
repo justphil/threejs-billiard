@@ -3,7 +3,7 @@
 describe('[Hooray Foundation]', function() {
 
     describe('Public API', function() {
-        it('should define a public Hooray namespace', function() {
+        it('should be defined in global Hooray namespace', function() {
             expect(Hooray).toBeDefined();
         });
 
@@ -21,6 +21,10 @@ describe('[Hooray Foundation]', function() {
 
         it('should contain a Namespace() function', function() {
             expect(Hooray.Namespace).toBeDefined();
+        });
+
+        it('should contain a define() function', function() {
+            expect(Hooray.define).toBeDefined();
         });
 
         it('should contain a defineClass() function', function() {
@@ -114,6 +118,42 @@ describe('[Hooray Foundation]', function() {
         });
     });
 
+    describe('define()', function() {
+        var globalNamespace = 'test';
+
+        beforeEach(function() {
+            delete window[globalNamespace];
+            delete Hooray[globalNamespace];
+        });
+
+        it('should properly define components in a global namespace', function() {
+            var fn = function() {};
+            var component = Hooray.define(globalNamespace, 'a.b.c', 'go', fn);
+            expect(window[globalNamespace].a.b.c.go).toBeDefined();
+            expect(window[globalNamespace].a.b.c.go).toBe(component);
+            expect(component).toBe(fn);
+        });
+
+        it('should properly define components in the Hooray namespace', function() {
+            var fn = function() {};
+            var component = Hooray.define('', globalNamespace, 'go', fn);
+            expect(Hooray[globalNamespace].go).toBeDefined();
+            expect(Hooray[globalNamespace].go).toBe(component);
+            expect(component).toBe(fn);
+        });
+
+        it('should properly throw an error when redefining components', function() {
+            var fn1 = function() {},
+                fn2 = function() {};
+
+            Hooray.define(globalNamespace, 'a.b.c', 'go', fn1);
+
+            expect(function() {
+                Hooray.define(globalNamespace, 'a.b.c', 'go', fn2);
+            }).toThrow();
+        });
+    });
+
     describe('defineClass()', function() {
         var globalNamespace = 'test';
         var Person;
@@ -159,6 +199,16 @@ describe('[Hooray Foundation]', function() {
             expect(Object.getPrototypeOf(p).getAge).toBeDefined();
             expect(p.getName()).toBe('test');
             expect(p.getAge()).toBe(123);
+        });
+    });
+
+    describe('extendClass()', function() {
+        var globalNamespace = 'test';
+        var Person;
+
+        beforeEach(function() {
+            Person = undefined;
+            delete window[globalNamespace];
         });
 
         it('should be able to extend classes', function() {
