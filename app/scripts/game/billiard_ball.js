@@ -9,8 +9,8 @@
             this.initY  = initY;
             this.radius = radius;
 
-            this.vX     = 4;
-            this.vY     = -3;
+            this.vX     = 3;
+            this.vY     = -1.5;
 
             this.rotationHelper = Billiard.Helper.RotationHelper;
             this.coordsRotationHelper = Billiard.Helper.CoordsRotationHelper;
