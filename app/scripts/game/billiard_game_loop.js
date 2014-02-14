@@ -22,13 +22,21 @@
         /* #### #### #### */
 
         mainGameLoop: function() {
-            var i, n, b,
+            var i, j, n, ballA, ballB,
                 ba = this.ballsArray;
             for (i = 0, n = ba.length; i < n; i++) {
-                b = ba[i];
-                b.translate();
-                b.rotate();
-                b.handleCushionCollision(this.table);
+                ballA = ba[i];
+                ballA.translate();
+                ballA.rotate();
+                ballA.handleCushionCollision(this.table);
+
+                // optimization to eliminate double collision checking between two balls
+                if (i < (n-1)) {
+                    for (j = i + 1; j < n; j++) {
+                        ballB = ba[j];
+                        ballA.handleBallCollision(ballB);
+                    }
+                }
             }
         },
 
