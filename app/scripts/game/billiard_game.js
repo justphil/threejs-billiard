@@ -1,8 +1,7 @@
-(function(W, T, Hooray) {
+(function(W, Hooray) {
     "use strict";
 
-    var Billiard = Hooray.Namespace('Billiard', 'Billiard');
-    Billiard.Game = Hooray.Class({
+    Hooray.defineClass('Billiard', '', 'Game', {
         init: function(gameContainerId, rules, table) {
             Hooray.log('A new Billiard.Game instance has been created!');
             this.balls = this.initBalls(rules); // hash: ballId -> Billiard.Ball object
@@ -49,4 +48,5 @@
             this.gameLoop.stop();
         }
     });
-})(window, THREE, Hooray);
+
+})(window, Hooray);

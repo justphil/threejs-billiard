@@ -1,11 +1,13 @@
 (function(W, Hooray) {
     "use strict";
 
-    var log = true;
+    var doLog = true;
 
-    Hooray.log = function() {
-        if (log) {
+    var log = function() {
+        if (doLog) {
             console.log.apply(console, arguments);
         }
     };
+
+    Hooray.define('', '', 'log', log);
 })(window, Hooray);

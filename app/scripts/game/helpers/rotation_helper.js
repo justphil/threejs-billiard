@@ -10,13 +10,15 @@
         object.quaternion.multiplyQuaternions(helperQuaternion, object.quaternion);
     }
 
-
-    var RotationHelper = Hooray.Namespace('Billiard.Helper.RotationHelper', 'Billiard');
-    RotationHelper.rotateAroundWorldAxisY = function(object, radians) {
+    function rotateAroundWorldAxisY(object, radians) {
         rotateAroundWorldAxis(object, normalizedYAxisVector, radians);
-    };
+    }
 
-    RotationHelper.rotateAroundWorldAxisX = function(object, radians) {
+    function rotateAroundWorldAxisX(object, radians) {
         rotateAroundWorldAxis(object, normalizedXAxisVector, radians);
-    };
+    }
+
+    Hooray.define('Billiard', 'Helper.RotationHelper', 'rotateAroundWorldAxisY', rotateAroundWorldAxisY);
+    Hooray.define('Billiard', 'Helper.RotationHelper', 'rotateAroundWorldAxisX', rotateAroundWorldAxisX);
+
 })(window, Hooray);

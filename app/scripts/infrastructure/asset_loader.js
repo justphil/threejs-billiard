@@ -1,13 +1,12 @@
-(function(W, T, Hooray) {
+(function(W, Hooray) {
     "use strict";
 
-    var Billiard = Hooray.Namespace('Billiard', 'Billiard');
-    Billiard.AssetLoader = Hooray.Class({
+    Hooray.defineClass('Billiard', '', 'AssetLoader', {
         init: function() {
             Hooray.log('A new Billiard.AssetLoader instance has been created!');
 
             this.maps = {}; // url -> texture map
-            this.textureLoader = new T.TextureLoader();
+            this.textureLoader = new THREE.TextureLoader();
         },
 
         getMap: function(url) {
@@ -69,4 +68,4 @@
             });
         }
     });
-})(window, THREE, Hooray);
+})(window, Hooray);

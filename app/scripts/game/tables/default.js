@@ -1,8 +1,7 @@
 (function(W, Hooray) {
     "use strict";
 
-    var Table = Hooray.Namespace('Billiard.Table', 'Billiard');
-    Table.Default = Hooray.Class({
+    Hooray.defineClass('Billiard', 'Table', 'Default', {
         init: function(playingFieldWidth, playingFieldHeight) {
             Hooray.log('A new Billiard.Table.Default instance has been created!');
             this.playingFieldWidth  = playingFieldWidth;
@@ -22,4 +21,5 @@
             return this.backgroundTexture;
         }
     });
+
 })(window, Hooray);

@@ -1,8 +1,7 @@
 (function(W, Hooray) {
     "use strict";
 
-    var Billiard = Hooray.Namespace('Billiard', 'Billiard');
-    Billiard.GameRenderEngine = Hooray.Class({
+    Hooray.defineClass('Billiard', '', 'GameRenderEngine', {
         init: function(gameContainerId) {
             Hooray.log('A new Billiard.GameRenderEngine instance has been created within "'+gameContainerId+'"!');
 
@@ -111,4 +110,5 @@
             return light;
         }
     });
+
 })(window, Hooray);

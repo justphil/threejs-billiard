@@ -1,8 +1,7 @@
 (function(W, Hooray) {
     "use strict";
 
-    var Rules = Hooray.Namespace('Billiard.Rules', 'Billiard');
-    Rules.EightBall = Hooray.Class({
+    Hooray.defineClass('Billiard', 'Rules', 'EightBall', {
         init: function() {
             Hooray.log('A new Billiard.Rules.EightBall instance has been created!');
 
@@ -45,4 +44,5 @@
             return this.radius;
         }
     });
+
 })(window, Hooray);

@@ -1,15 +1,14 @@
 (function(W, Hooray) {
     "use strict";
 
-    var Billiard = Hooray.Namespace('Billiard', 'Billiard');
-    Billiard.GameLoop = Hooray.Class({
+    Hooray.defineClass('Billiard', '', 'GameLoop', {
         init: function(gameRenderEngine, balls, table) {
             Hooray.log('A new Billiard.GameLoop instance has been created!');
             this.gameRenderEngine = gameRenderEngine;
             this.balls = balls;
             this.table = table;
 
-            // create an array out of the balls hash due fixed order and easier iteration in mainGameLoop
+            // create an array out of the balls hash due to fixed order and easier iteration in mainGameLoop
             this.ballsArray = [];
             for (var ballId in this.balls) {
                 if (this.balls.hasOwnProperty(ballId)) {
@@ -52,4 +51,5 @@
             }
         }
     });
+
 })(window, Hooray);

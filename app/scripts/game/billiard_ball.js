@@ -1,8 +1,7 @@
 (function(W, Hooray) {
     "use strict";
 
-    var Billiard = Hooray.Namespace('Billiard', 'Billiard');
-    Billiard.Ball = Hooray.Class({
+    Hooray.defineClass('Billiard', '', 'Ball', {
         init: function(id, initX, initY, radius) {
             Hooray.log('A new Billiard.Ball instance has been created with id "'+id+'"!');
             this.id     = id;
@@ -53,4 +52,5 @@
             }
         }
     });
+
 })(window, Hooray);
