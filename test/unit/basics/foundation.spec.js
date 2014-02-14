@@ -23,12 +23,12 @@ describe('[Hooray Foundation]', function() {
             expect(Hooray.Namespace).toBeDefined();
         });
 
-        it('should contain a Class() function', function() {
-            expect(Hooray.Class).toBeDefined();
+        it('should contain a defineClass() function', function() {
+            expect(Hooray.defineClass).toBeDefined();
         });
 
-        it('should contain a Class.extend() function', function() {
-            expect(Hooray.Class.extend).toBeDefined();
+        it('should contain a extendClass() function', function() {
+            expect(Hooray.extendClass).toBeDefined();
         });
     });
 
@@ -114,22 +114,24 @@ describe('[Hooray Foundation]', function() {
         });
     });
 
-    describe('Class()', function() {
+    describe('defineClass()', function() {
+        var globalNamespace = 'test';
         var Person;
 
         beforeEach(function() {
             Person = undefined;
+            delete window[globalNamespace];
         });
 
         it('should be able to create plain classes (without providing a config object)', function() {
-            Person = Hooray.Class();
+            Person = Hooray.defineClass(globalNamespace, '', 'Person');
             var p = new Person();
             expect(typeof p).toBe('object');
             expect(p instanceof Person).toBe(true);
         });
 
         it('should be able to create classes with a constructor (init)', function() {
-            Person = Hooray.Class({
+            Person = Hooray.defineClass(globalNamespace, '', 'Person', {
                 init: function(name, age) {
                     this.name = name;
                     this.age = age;
@@ -141,7 +143,7 @@ describe('[Hooray Foundation]', function() {
         });
 
         it('should be able to create classes with instance methods', function() {
-            Person = Hooray.Class({
+            Person = Hooray.defineClass(globalNamespace, '', 'Person', {
                 getName: function() {
                     return 'test';
                 },
@@ -160,7 +162,7 @@ describe('[Hooray Foundation]', function() {
         });
 
         it('should be able to extend classes', function() {
-            Person = Hooray.Class({
+            Person = Hooray.defineClass(globalNamespace, '', 'Person', {
                 init: function(name, age) {
                     this.name = name;
                     this.age = age;
@@ -173,7 +175,7 @@ describe('[Hooray Foundation]', function() {
                 }
             });
 
-            var Employee = Hooray.Class.extend(Person, {
+            var Employee = Hooray.extendClass(globalNamespace, '', 'Employee', Person, {
                 init: function(name, age, salary) {
                     this.salary = salary;
                 },

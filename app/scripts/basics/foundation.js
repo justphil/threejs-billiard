@@ -32,18 +32,20 @@
             parts = parts.slice(1);
         }
 
-        for (i = 0; i < parts.length; i++) {
-            if (Hooray.isUndefined(parent[parts[i]])) {
-                parent[parts[i]] = {};
+        if (parts.length > 0 && parts[0].trim().length > 0) {
+            for (i = 0; i < parts.length; i++) {
+                if (Hooray.isUndefined(parent[parts[i]])) {
+                    parent[parts[i]] = {};
+                }
+                parent = parent[parts[i]];
             }
-            parent = parent[parts[i]];
         }
 
         return parent;
     };
 
     /* Simple class system */
-    Hooray.Class = function(configObj, superClassConstructor) {
+    var Class = function(configObj, superClassConstructor) {
         if (Hooray.isUndefined(configObj)) {
             configObj = {};
         }
@@ -89,14 +91,37 @@
         return wrapper;
     };
 
-    Hooray.Class.extend = function(superClassConstructor, configObj) {
-        return Hooray.Class(configObj, superClassConstructor);
+    Hooray.define = function(globalNs, nsString, componentName, component) {
+        var nsObj = Hooray.Namespace(nsString, globalNs);
+        if (!Hooray.isUndefined(nsObj[componentName])) {
+            if (nsString.trim().length > 0) {
+                nsString = '.' + nsString;
+            }
+
+            throw new Error(
+                '!!! Cannot define component "'+componentName+'" of type "'+typeof component+'"'+
+                ' in namespace "'+globalNs+nsString+'" because it would overwrite an existent component !!!'
+            );
+        }
+        else {
+            nsObj[componentName] = component;
+            return component;
+        }
+    };
+
+    Hooray.defineClass = function(globalNs, nsString, className, configObj, superClassConstructor) {
+        return Hooray.define(globalNs, nsString, className, Class(configObj, superClassConstructor));
+    };
+
+    // just to clarify the class extension possibility
+    Hooray.extendClass = function(globalNs, nsString, className, superClassConstructor, configObj) {
+        return Hooray.defineClass(globalNs, nsString, className, configObj, superClassConstructor);
     };
 
     /* Register Hooray */
     if (W[HOORAY]) {
         throw new Error(
-            '!!! The namespace "' + HOORAY + '" has already been set! This will probably lead to strange behaviour !!!'
+            '!!! The namespace "' + HOORAY + '" has already been set and ' + HOORAY + ' cannot handle it appropriately !!!'
         );
     }
     else {

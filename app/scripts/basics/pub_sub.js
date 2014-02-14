@@ -1,7 +1,7 @@
 (function(W, Hooray) {
     "use strict";
 
-    Hooray.PubSub = Hooray.Class({
+    Hooray.defineClass('', '', 'PubSub', {
         init: function() {
             // hash of arrays of callback functions
             this.topics = {};
