@@ -6,6 +6,9 @@
             Hooray.log('A new Billiard.Rules.EightBall instance has been created!');
 
             this.radius = 20;
+
+            this.mass = 1;
+
             this.balls = {
                 'images/ball0.jpg' : {x: -480 + (0*2+1)*this.radius, y: 0},
                 'images/ball1.jpg' : {x: -480 + (1*2+1)*this.radius, y: 0},
@@ -46,6 +49,10 @@
 
         getBallRadius: function() {
             return this.radius;
+        },
+
+        getBallMass: function() {
+            return this.mass;
         }
     });
 

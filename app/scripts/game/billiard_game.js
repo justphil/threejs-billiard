@@ -20,6 +20,7 @@
         initBalls: function(rules) {
             var positions   = rules.getBalls(), // hash: ballId -> position object
                 radius      = rules.getBallRadius(), // number
+                mass        = rules.getBallMass(), // number
                 balls       = {},
                 prop;
 
@@ -29,7 +30,8 @@
                         prop,
                         positions[prop].x,
                         positions[prop].y,
-                        radius
+                        radius,
+                        mass
                     );
                 }
             }

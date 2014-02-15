@@ -2,18 +2,29 @@
     "use strict";
 
     Hooray.defineClass('Billiard', '', 'Ball', {
-        init: function(id, initX, initY, radius) {
+        init: function(id, initX, initY, radius, mass) {
             Hooray.log('A new Billiard.Ball instance has been created with id "'+id+'"!');
             this.id     = id;
             this.initX  = initX;
             this.initY  = initY;
             this.radius = radius;
+            this.mass   = mass;
 
             this.vX     = 3;
             this.vY     = -1.5;
 
             this.rotationHelper = Billiard.Helper.RotationHelper;
-            this.coordsRotationHelper = Billiard.Helper.CoordsRotationHelper;
+            //this.coordsRotationHelper = Billiard.Helper.CoordsRotationHelper;
+
+            this.collisionHelper = {
+                ball0Center: new THREE.Vector2(0, 0),
+                ball1Center: new THREE.Vector2(0, 0),
+                v0: new THREE.Vector2(0, 0),
+                v1: new THREE.Vector2(0, 0),
+                n: new THREE.Vector2(0, 0),
+                tmp: new THREE.Vector2(0, 0)
+
+            };
 
             // !!! A Billiard.Ball object will be augmented with a mesh property during initialization !!!
         },
@@ -63,7 +74,9 @@
 
             // check for collision based on radius
             if (dist < this.radius + anotherBall.radius) {
-                var crh = this.coordsRotationHelper;
+
+
+                /*var crh = this.coordsRotationHelper;
 
                 // calculate angle, sine, and cosine
                 var angle = Math.atan2(dy, dx),
@@ -107,7 +120,7 @@
                 this.vX = vel0F.x;
                 this.vY = vel0F.y;
                 anotherBall.vX = vel1F.x;
-                anotherBall.vY = vel1F.y;
+                anotherBall.vY = vel1F.y;*/
             }
         }
     });
