@@ -10,12 +10,12 @@
             this.radius = radius;
             this.mass   = mass;
 
-            this.vX     = 1;
-            this.vY     = 1;
+            this.vX     = 3;
+            this.vY     = 3;
 
             this.rotationHelper = Billiard.Helper.RotationHelper;
 
-            //this.coordsRotationHelper = Billiard.Helper.CoordsRotationHelper;
+            this.coordsRotationHelper = Billiard.Helper.CoordsRotationHelper;
 
             /*this.collisionHelper = {
                 ball0Center: new THREE.Vector2(0, 0),
@@ -77,6 +77,10 @@
             if (dist < this.radius + anotherBall.radius) {
 
 
+                /*
+
+                THIS COLLISION HANDLING IS QUITE GOOD BUT BALLS BECOME STUCK!!!
+
                 var angle = Math.atan2(dy, dx),
                     sin = Math.sin(angle),
                     cos = Math.cos(angle),
@@ -89,6 +93,14 @@
                 var ball1vXr = anotherBall.vX * cos + anotherBall.vY * sin;
                 var ball1vYr = -anotherBall.vX * sin + anotherBall.vY * cos;
 
+                // rotate orientation of line of action
+                // and consider ball0 (pos0) as the reference
+                var pos0 = {x: 0, y: 0};
+                var pos1 = {
+                    x: dx * cos + dy * sin,
+                    y: -dx * sin + dy * cos
+                };
+
                 // apply conservation of momentum
                 var tmp = 1 / (this.mass + anotherBall.mass);
                 var newVxBall0 = (this.mass - e * anotherBall.mass) * ball0vXr * tmp
@@ -97,21 +109,48 @@
                 var newVxBall1 = (1 + e) * this.mass * ball0vXr * tmp
                                     + (anotherBall.mass - e * this.mass) * ball1vXr * tmp;
 
+                // update position to avoid objects becoming stuck together
+                var absV = Math.abs(ball0vXr) + Math.abs(ball1vXr),
+                    overlap = (this.radius + anotherBall.radius) - Math.abs(pos0.x - pos1.x);
+                pos0.x += ball0vXr.x / absV * overlap;
+                pos1.x += ball1vXr.x / absV * overlap;
+
+                // rotate positions back
+                var pos0F = {
+                        x: pos0.x * cos - pos0.y * sin,
+                        y: pos0.x * sin + pos0.y * cos
+                    },
+                    pos1F = {
+                        x: pos1.x * cos - pos1.y * sin,
+                        y: pos1.x * sin + pos1.y * cos
+                    };
+
+
+
                 // rotate velocity vectors back
                 this.vX = newVxBall0 * cos - ball0vYr * sin;
                 this.vY = newVxBall0 * sin + ball0vYr * cos;
 
                 anotherBall.vX = newVxBall1 * cos - ball1vYr * sin;
                 anotherBall.vY = newVxBall1 * sin + ball1vYr * cos;
+                */
 
 
 
-                /*var crh = this.coordsRotationHelper;
+
+
+
+
+
+
+
+                var crh = this.coordsRotationHelper;
 
                 // calculate angle, sine, and cosine
                 var angle = Math.atan2(dy, dx),
                     sin = Math.sin(angle),
                     cos = Math.cos(angle),
+                    e = 1,
                 // rotate ball0's position
                     pos0 = {x: 0, y: 0}, //point
                 // rotate ball1's position
@@ -121,18 +160,20 @@
                 // rotate ball1's velocity
                     vel1 = crh.rotateCoords(anotherBall.vX, anotherBall.vY, sin, cos, true);
 
-                // collision reaction is as easy as swapping the two velocities
-                // because we deal with same mass objects
-                var temp = vel0;
-                vel0 = vel1;
-                vel1 = temp;
+                // apply conservation of momentum
+                var tmp = 1 / (this.mass + anotherBall.mass);
+                var newVxBall0 = (this.mass - e * anotherBall.mass) * vel0.x * tmp
+                                    + (1 + e) * anotherBall.mass * vel1.x * tmp;
+
+                var newVxBall1 = (1 + e) * this.mass * vel0.x * tmp
+                                    + (anotherBall.mass - e * this.mass) * vel1.x * tmp;
 
 
-                // update position avoiding objects becoming stuck together
-                var absV = Math.abs(vel0.x) + Math.abs(vel1.x),
+                // update position to avoid objects becoming stuck together
+                var absV = Math.abs(newVxBall0) + Math.abs(newVxBall1),
                     overlap = (this.radius + anotherBall.radius) - Math.abs(pos0.x - pos1.x);
-                pos0.x += vel0.x / absV * overlap;
-                pos1.x += vel1.x / absV * overlap;
+                pos0.x += newVxBall0 / absV * overlap;
+                pos1.x += newVxBall1 / absV * overlap;
 
                 // rotate positions back
                 var pos0F = crh.rotateCoords(pos0.x, pos0.y, sin, cos, false),
@@ -145,12 +186,13 @@
                 ball0.y = ball0.y + pos0F.y;
 
                 // rotate velocities back
-                var vel0F = crh.rotateCoords(vel0.x, vel0.y, sin, cos, false),
-                    vel1F = crh.rotateCoords(vel1.x, vel1.y, sin, cos, false);
+                var vel0F = crh.rotateCoords(newVxBall0, vel0.y, sin, cos, false),
+                    vel1F = crh.rotateCoords(newVxBall1, vel1.y, sin, cos, false);
+
                 this.vX = vel0F.x;
                 this.vY = vel0F.y;
                 anotherBall.vX = vel1F.x;
-                anotherBall.vY = vel1F.y;*/
+                anotherBall.vY = vel1F.y;
             }
         }
     });
