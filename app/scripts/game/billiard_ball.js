@@ -10,13 +10,14 @@
             this.radius = radius;
             this.mass   = mass;
 
-            this.vX     = 3;
-            this.vY     = -1.5;
+            this.vX     = 1;
+            this.vY     = 1;
 
             this.rotationHelper = Billiard.Helper.RotationHelper;
+
             //this.coordsRotationHelper = Billiard.Helper.CoordsRotationHelper;
 
-            this.collisionHelper = {
+            /*this.collisionHelper = {
                 ball0Center: new THREE.Vector2(0, 0),
                 ball1Center: new THREE.Vector2(0, 0),
                 v0: new THREE.Vector2(0, 0),
@@ -24,7 +25,7 @@
                 n: new THREE.Vector2(0, 0),
                 tmp: new THREE.Vector2(0, 0)
 
-            };
+            };*/
 
             // !!! A Billiard.Ball object will be augmented with a mesh property during initialization !!!
         },
@@ -74,6 +75,35 @@
 
             // check for collision based on radius
             if (dist < this.radius + anotherBall.radius) {
+
+
+                var angle = Math.atan2(dy, dx),
+                    sin = Math.sin(angle),
+                    cos = Math.cos(angle),
+                    e = 1;
+
+                // rotate velocity vectors
+                var ball0vXr = this.vX * cos + this.vY * sin;
+                var ball0vYr = -this.vX * sin + this.vY * cos;
+
+                var ball1vXr = anotherBall.vX * cos + anotherBall.vY * sin;
+                var ball1vYr = -anotherBall.vX * sin + anotherBall.vY * cos;
+
+                // apply conservation of momentum
+                var tmp = 1 / (this.mass + anotherBall.mass);
+                var newVxBall0 = (this.mass - e * anotherBall.mass) * ball0vXr * tmp
+                                    + (1 + e) * anotherBall.mass * ball1vXr * tmp;
+
+                var newVxBall1 = (1 + e) * this.mass * ball0vXr * tmp
+                                    + (anotherBall.mass - e * this.mass) * ball1vXr * tmp;
+
+                // rotate velocity vectors back
+                this.vX = newVxBall0 * cos - ball0vYr * sin;
+                this.vY = newVxBall0 * sin + ball0vYr * cos;
+
+                anotherBall.vX = newVxBall1 * cos - ball1vYr * sin;
+                anotherBall.vY = newVxBall1 * sin + ball1vYr * cos;
+
 
 
                 /*var crh = this.coordsRotationHelper;
