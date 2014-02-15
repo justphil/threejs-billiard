@@ -10,7 +10,7 @@
             this.mass = 1;
 
             this.balls = {
-                'images/ball0.jpg' : {x: -480 + (0*2+1)*this.radius, y: 0},
+                /*'images/ball0.jpg' : {x: -480 + (0*2+1)*this.radius, y: 0},
                 'images/ball1.jpg' : {x: -480 + (1*2+1)*this.radius, y: 0},
                 'images/ball2.jpg' : {x: -480 + (2*2+1)*this.radius, y: 0},
                 'images/ball3.jpg' : {x: -480 + (3*2+1)*this.radius, y: 0},
@@ -25,10 +25,10 @@
                 'images/ball12.jpg': {x: -480 + (12*2+1)*this.radius, y: 0},
                 'images/ball13.jpg': {x: -480 + (13*2+1)*this.radius, y: 0},
                 'images/ball14.jpg': {x: -480 + (14*2+1)*this.radius, y: 0},
-                'images/ball15.jpg': {x: -480 + (15*2+1)*this.radius, y: 0}
+                'images/ball15.jpg': {x: -480 + (15*2+1)*this.radius, y: 0}*/
 
 
-                /*'images/ball14.jpg': {x: -480 + this.radius, y: 30},
+                'images/ball14.jpg': {x: -480 + this.radius, y: 240 - this.radius}/*,
                 'images/ball15.jpg': {x:  480 - this.radius, y: 0}*/
             };
         },

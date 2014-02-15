@@ -10,8 +10,11 @@
             this.radius = radius;
             this.mass   = mass;
 
-            this.vX     = 3;
-            this.vY     = 3;
+            this.angularAccelerationDenominator = (2/5) * this.mass * (this.radius * this.radius);
+
+            this.vX         = 0;
+            this.vY         = -5;
+            this.vAngular   = 0;
 
             this.rotationHelper = Billiard.Helper.RotationHelper;
             this.coordsRotationHelper = Billiard.Helper.CoordsRotationHelper;
@@ -25,8 +28,86 @@
         },
 
         rotate: function() {
-            this.rotationHelper.rotateAroundWorldAxisX(this.mesh, -this.vY / this.radius);
-            this.rotationHelper.rotateAroundWorldAxisY(this.mesh, this.vX / this.radius);
+            var generalFrictionFactor = 0, friction = 0;
+            var currentVelocity = this.getVelocity();
+            var vAngle = this.getVelocityAngle();
+            // check condition for perfect ball rotation/rolling
+            if (this.isPerfectlyRotating()) {
+                //console.log('ROLLING');
+                generalFrictionFactor = 0.014;
+
+                // apply perfect ball rotation/rolling
+                // = angular velocity perfectly corresponds to distance travelled
+                this.rotationHelper.rotateAroundWorldAxisX(this.mesh, -this.vY / this.radius);
+                this.rotationHelper.rotateAroundWorldAxisY(this.mesh, this.vX / this.radius);
+            }
+            else {
+                //console.log('SLIDING');
+                // here the ball is still sliding and due to sliding friction it progressively starts to rotate
+                generalFrictionFactor = 0;
+
+                // apply sliding friction
+                //var frictionForce = this.frictionCoefficientBillard * testBall.mass * this.gravitationalConstant;
+                friction = 0.055; // TODO: This friction should be calculated according to the physical rules!
+
+
+                // due to sliding friction we need to apply the corresponding torque
+                // apply torque and calculate resulting angular acceleration
+                this.applyTorque(friction);
+
+                this.rotationHelper.rotateAroundWorldAxisX(this.mesh, -this.vAngular * Math.sin(vAngle));
+                this.rotationHelper.rotateAroundWorldAxisY(this.mesh, this.vAngular * Math.cos(vAngle));
+            }
+
+            friction = friction + (currentVelocity * generalFrictionFactor);
+            this.applyAbsoluteFriction(friction, currentVelocity, vAngle, 0.05);
+        },
+
+        applyAbsoluteFriction: function(absoluteFriction, velocity, velocityAngle, stopThreshold) {
+            var v       = (Hooray.isUndefined(velocity)) ? this.getVelocity() : velocity;
+            var vAngle  = (Hooray.isUndefined(velocityAngle)) ? this.getVelocityAngle() : velocityAngle;
+
+            if (v > absoluteFriction) {
+                v -= absoluteFriction;
+            }
+            else {
+                v = 0;
+            }
+
+            this.vX = Math.cos(vAngle) * v;
+            this.vY = Math.sin(vAngle) * v;
+
+            if (Math.abs(this.vX) < stopThreshold) {
+                this.vX = 0;
+            }
+
+            if (Math.abs(this.vY) < stopThreshold) {
+                this.vY = 0;
+            }
+        },
+
+        applyTorque: function(absoluteFriction) {
+            var torque     = absoluteFriction * this.radius;
+            this.vAngular += torque / this.angularAccelerationDenominator;
+        },
+
+        getVelocityAngle: function() {
+            return Math.atan2(this.vY, this.vX);
+        },
+
+        getSquaredVelocity: function() {
+            return this.vX * this.vX + this.vY * this.vY;
+        },
+
+        getVelocity: function(squaredVelocity) {
+            var sv = (Hooray.isUndefined(squaredVelocity)) ? this.getSquaredVelocity() : squaredVelocity;
+            return Math.sqrt(sv);
+        },
+
+        isPerfectlyRotating: function(velocity) {
+            var v = (Hooray.isUndefined(velocity)) ? this.getVelocity() : velocity;
+            // TODO: set vAngular to corresponding value
+            return this.vAngular * this.radius >= v;
         },
 
         handleCushionCollision: function(table) {
