@@ -4,6 +4,7 @@
     Hooray.defineClass('Billiard', '', 'Ball', {
         init: function(id, initX, initY, radius, mass) {
             Hooray.log('A new Billiard.Ball instance has been created with id "'+id+'"!');
+
             this.id     = id;
             this.initX  = initX;
             this.initY  = initY;
@@ -12,8 +13,8 @@
 
             this.angularAccelerationDenominator = (2/5) * this.mass * (this.radius * this.radius);
 
-            this.vX         = 0;
-            this.vY         = -5;
+            this.vX         = Math.round(Math.random() * 20);
+            this.vY         = Math.round(Math.random() * 20);
             this.vAngular   = 0;
 
             this.rotationHelper = Billiard.Helper.RotationHelper;
@@ -28,21 +29,21 @@
         },
 
         rotate: function() {
-            var generalFrictionFactor = 0, friction = 0;
+            var generalFrictionFactor = 0;
+            var friction = 0;
             var currentVelocity = this.getVelocity();
             var vAngle = this.getVelocityAngle();
+
             // check condition for perfect ball rotation/rolling
             if (this.isPerfectlyRotating()) {
-                //console.log('ROLLING');
-                generalFrictionFactor = 0.014;
+                generalFrictionFactor = 0.011;
 
                 // apply perfect ball rotation/rolling
-                // = angular velocity perfectly corresponds to distance travelled
+                // aka angular velocity perfectly corresponds to distance travelled
                 this.rotationHelper.rotateAroundWorldAxisX(this.mesh, -this.vY / this.radius);
                 this.rotationHelper.rotateAroundWorldAxisY(this.mesh, this.vX / this.radius);
             }
             else {
-                //console.log('SLIDING');
                 // here the ball is still sliding and due to sliding friction it progressively starts to rotate
                 generalFrictionFactor = 0;
 
@@ -52,7 +53,7 @@
 
 
                 // due to sliding friction we need to apply the corresponding torque
-                // apply torque and calculate resulting angular acceleration
+                // apply torque, calculate the resulting angular acceleration and add it to angular velocity
                 this.applyTorque(friction);
 
                 this.rotationHelper.rotateAroundWorldAxisX(this.mesh, -this.vAngular * Math.sin(vAngle));
@@ -106,7 +107,7 @@
 
         isPerfectlyRotating: function(velocity) {
             var v = (Hooray.isUndefined(velocity)) ? this.getVelocity() : velocity;
-            // TODO: set vAngular to corresponding value
+            // TODO: set vAngular to corresponding value if ball is perfectly rotating
             return this.vAngular * this.radius >= v;
         },
 
