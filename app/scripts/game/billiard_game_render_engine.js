@@ -27,6 +27,7 @@
         initGameRenderEngine: function(assets) {
             var that = this;
             var assetId, geometry, material, sphere;
+            var rh = Billiard.Helper.RotationHelper;
 
             return this.assetLoader.getMaps(Object.keys(assets)).then(function(mapHash) {
                 // create three.js sphere that represents a ball and add it to the scene
@@ -41,6 +42,9 @@
                         sphere = new THREE.Mesh(geometry, material);
                         sphere.position.x = assets[assetId].initX;
                         sphere.position.y = assets[assetId].initY;
+
+                        // adjust rotation because the textures has got a particular offset
+                        rh.rotateAroundWorldAxisY(sphere, -Math.PI/2);
 
                         that.scene.add(sphere);
 
