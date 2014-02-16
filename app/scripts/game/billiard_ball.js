@@ -11,11 +11,22 @@
             this.radius = radius;
             this.mass   = mass;
 
-            this.angularAccelerationDenominator = (2/5) * this.mass * (this.radius * this.radius);
+            this.momentOfInertiaSphere = (2/5) * this.mass * (this.radius * this.radius);
 
-            this.vX         = Math.round(Math.random() * 20);
-            this.vY         = Math.round(Math.random() * 20);
+            /*this.vX         = Math.round(Math.random() * 20);
+            this.vY         = Math.round(Math.random() * 20);*/
+
+            if (id === 'images/ball14.jpg') {
+                this.vX = 8;
+                this.vY = 0;
+            }
+            else {
+                this.vX = 0;
+                this.vY = 0;
+            }
+
             this.vAngular   = 0;
+            this.vAngularZ  = 0;
 
             this.rotationHelper = Billiard.Helper.RotationHelper;
             this.coordsRotationHelper = Billiard.Helper.CoordsRotationHelper;
@@ -62,6 +73,29 @@
 
             friction = friction + (currentVelocity * generalFrictionFactor);
             this.applyAbsoluteFriction(friction, currentVelocity, vAngle, 0.05);
+
+            // apply z rotation if available
+            var angularFriction = 0.0009;
+            if (this.vAngularZ !== 0) {
+                this.rotationHelper.rotateAroundWorldAxisZ(this.mesh, this.vAngularZ);
+
+                if (this.vAngularZ > 0) {
+                    if ((this.vAngularZ - angularFriction) < 0) {
+                        this.vAngularZ = 0;
+                    }
+                    else {
+                        this.vAngularZ -= angularFriction;
+                    }
+                }
+                else {
+                    if ((this.vAngularZ + angularFriction) > 0) {
+                        this.vAngularZ = 0;
+                    }
+                    else {
+                        this.vAngularZ += angularFriction;
+                    }
+                }
+            }
         },
 
         applyAbsoluteFriction: function(absoluteFriction, velocity, velocityAngle, stopThreshold) {
@@ -89,7 +123,7 @@
 
         applyTorque: function(absoluteFriction) {
             var torque     = absoluteFriction * this.radius;
-            this.vAngular += torque / this.angularAccelerationDenominator;
+            this.vAngular += torque / this.momentOfInertiaSphere;
         },
 
         getVelocityAngle: function() {
@@ -170,6 +204,17 @@
                 var newVxBall1 = (1 + e) * this.mass * vel0.x * tmp
                                     + (anotherBall.mass - e * this.mass) * vel1.x * tmp;
 
+                // apply friction due to oblique collision if it is an oblique collision
+                if (this.isObliqueBallCollision(vel0.x, vel0.y, dx, dy)) {
+                    //console.log('Oblique!');
+                    var fiveSeventh = 5 / 7;
+
+                    this.vAngularZ = -fiveSeventh * (vel0.y / this.radius);
+                    anotherBall.vAngularZ = fiveSeventh * (vel1.y / anotherBall.radius);
+
+                    //vel0.y = fiveSeventh * vel0.y;
+                    //vel1.y = fiveSeventh * vel1.y;
+                }
 
                 // update position to avoid that objects become stuck together
                 var absV = Math.abs(newVxBall0) + Math.abs(newVxBall1),
@@ -196,6 +241,26 @@
                 anotherBall.vX = vel1F.x;
                 anotherBall.vY = vel1F.y;
             }
+        },
+
+        isObliqueBallCollision: function(vX0, vY0, vX1, vY1) {
+            // calculate dot product of v0 and v1
+            var dotProduct = vX0 * vX1 + vY0 * vY1;
+
+            // calculate the amount of v0 and v1
+            var amountV0 = Math.sqrt(vX0*vX0 + vY0*vY0);
+            var amountV1 = Math.sqrt(vX1*vX1 + vY1*vY1);
+
+            // calculate cos of the angle between v0 and v1
+            var cosAngle = dotProduct / (amountV0 * amountV1);
+
+            // calculate the angle
+            var angle = Math.acos(cosAngle);
+
+            //console.log('COS ANGLE', angle * 180 / Math.PI, cosAngle);
+
+            // the collision is oblique if the angle is not a multiple of PI/2
+            return (angle % (Math.PI/2)) !== 0;
         }
     });
 
