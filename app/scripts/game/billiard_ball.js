@@ -13,17 +13,8 @@
 
             this.momentOfInertiaSphere = (2/5) * this.mass * (this.radius * this.radius);
 
-            /*this.vX         = Math.round(Math.random() * 20);
-            this.vY         = Math.round(Math.random() * 20);*/
-
-            if (id === 'images/ball14.jpg') {
-                this.vX = 8;
-                this.vY = 0;
-            }
-            else {
-                this.vX = 0;
-                this.vY = 0;
-            }
+            this.vX         = Math.round(Math.random() * 20);
+            this.vY         = Math.round(Math.random() * 20);
 
             this.vAngular   = 0;
             this.vAngularZ  = 0;
@@ -75,7 +66,8 @@
             this.applyAbsoluteFriction(friction, currentVelocity, vAngle, 0.05);
 
             // apply z rotation if available
-            var angularFriction = 0.0009;
+            //var angularFriction = 0.0009;
+            var angularFriction = 0.0025;
             if (this.vAngularZ !== 0) {
                 this.rotationHelper.rotateAroundWorldAxisZ(this.mesh, this.vAngularZ);
 
