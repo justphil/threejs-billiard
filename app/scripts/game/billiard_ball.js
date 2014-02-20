@@ -15,8 +15,13 @@
             //this.frictionCoefficientBillard = 0.2;
             //this.gravitationalConstant = 9.81;
 
-            this.vX         = Math.round(Math.random() * 20);
-            this.vY         = Math.round(Math.random() * 20);
+            this.vX         = 0; // Math.round(Math.random() * 20);
+            this.vY         = 0; //Math.round(Math.random() * 20);
+
+            if (id === 'images/ball0.jpg') {
+                this.vX = 0;
+                this.vY = 0;
+            }
 
             this.vAngular   = 0;
             this.vAngularZ  = 0;
@@ -196,6 +201,11 @@
         },
 
         handleBallCollision: function(anotherBall) {
+            if (this.vX === 0 && this.vY === 0 && anotherBall.vX === 0 && anotherBall.vY === 0) {
+                // two balls collide in the initial rack position -> ignore
+                return;
+            }
+
             var ball0 = this.mesh.position,
                 ball1 = anotherBall.mesh.position;
 
