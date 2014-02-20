@@ -28,6 +28,7 @@
                 ballA = ba[i];
                 ballA.translate();
                 ballA.rotate();
+                ballA.rotateZ();
                 ballA.handleCushionCollision(this.table);
 
                 // optimization to eliminate double collision checking between two balls

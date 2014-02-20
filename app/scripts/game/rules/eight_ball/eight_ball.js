@@ -28,8 +28,8 @@
                 'images/ball15.jpg': {x: -480 + (15*2+1)*this.radius, y: 0}
 
 
-                /*'images/ball14.jpg': {x: -480 + this.radius, y: -35},
-                'images/ball15.jpg': {x:  0, y: 0}*/
+                /*'images/ball14.jpg': {x: -480 + this.radius, y: 15},
+                'images/ball15.jpg': {x:  480 - this.radius, y: -15}*/
             };
         },
 

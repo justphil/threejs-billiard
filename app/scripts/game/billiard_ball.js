@@ -12,6 +12,8 @@
             this.mass   = mass;
 
             this.momentOfInertiaSphere = (2/5) * this.mass * (this.radius * this.radius);
+            //this.frictionCoefficientBillard = 0.2;
+            //this.gravitationalConstant = 9.81;
 
             this.vX         = Math.round(Math.random() * 20);
             this.vY         = Math.round(Math.random() * 20);
@@ -50,7 +52,7 @@
                 generalFrictionFactor = 0;
 
                 // apply sliding friction
-                //var frictionForce = this.frictionCoefficientBillard * testBall.mass * this.gravitationalConstant;
+                //friction = this.frictionCoefficientBillard * this.mass * this.gravitationalConstant;
                 friction = 0.055; // TODO: This friction should be calculated according to the physical rules!
 
 
@@ -64,7 +66,9 @@
 
             friction = friction + (currentVelocity * generalFrictionFactor);
             this.applyAbsoluteFriction(friction, currentVelocity, vAngle, 0.05);
+        },
 
+        rotateZ: function() {
             // apply z rotation if available
             //var angularFriction = 0.0009;
             var angularFriction = 0.0025;
@@ -94,16 +98,30 @@
             var v       = (Hooray.isUndefined(velocity)) ? this.getVelocity() : velocity;
             var vAngle  = (Hooray.isUndefined(velocityAngle)) ? this.getVelocityAngle() : velocityAngle;
 
+
+
             if (v > absoluteFriction) {
                 v -= absoluteFriction;
+
+                if (Math.abs(v) < stopThreshold) {
+                    v = 0;
+                }
             }
             else {
                 v = 0;
             }
 
-            this.vX = Math.cos(vAngle) * v;
-            this.vY = Math.sin(vAngle) * v;
 
+            if (v > 0) {
+                this.vX = Math.cos(vAngle) * v;
+                this.vY = Math.sin(vAngle) * v;
+            }
+            else {
+                this.vX = 0;
+                this.vY = 0;
+            }
+
+            /*
             if (Math.abs(this.vX) < stopThreshold) {
                 this.vX = 0;
             }
@@ -111,6 +129,7 @@
             if (Math.abs(this.vY) < stopThreshold) {
                 this.vY = 0;
             }
+            */
         },
 
         applyTorque: function(absoluteFriction) {
