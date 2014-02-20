@@ -2,7 +2,7 @@
     "use strict";
 
     Hooray.defineClass('Billiard', '', 'Ball', {
-        init: function(id, initX, initY, radius, mass) {
+        init: function(id, initX, initY, radius, mass, pubSub) {
             Hooray.log('A new Billiard.Ball instance has been created with id "'+id+'"!');
 
             this.id     = id;
@@ -23,6 +23,8 @@
 
             this.rotationHelper = Billiard.Helper.RotationHelper;
             this.coordsRotationHelper = Billiard.Helper.CoordsRotationHelper;
+
+            this.pubSub = pubSub;
 
             // !!! A Billiard.Ball object will be augmented with a mesh property during initialization !!!
         },
@@ -97,7 +99,8 @@
         applyAbsoluteFriction: function(absoluteFriction, velocity, velocityAngle, stopThreshold) {
             var v       = (Hooray.isUndefined(velocity)) ? this.getVelocity() : velocity;
             var vAngle  = (Hooray.isUndefined(velocityAngle)) ? this.getVelocityAngle() : velocityAngle;
-
+            var vBefore = v;
+            var that    = this;
 
 
             if (v > absoluteFriction) {
@@ -119,6 +122,17 @@
             else {
                 this.vX = 0;
                 this.vY = 0;
+
+                if (v !== vBefore) {
+                    this.pubSub.publish(
+                        Billiard.Event.BALL_STOPPED_ROLLING,
+                        {
+                            id: that.id,
+                            x: that.mesh.position.x,
+                            y: that.mesh.position.y
+                        }
+                    );
+                }
             }
 
             /*

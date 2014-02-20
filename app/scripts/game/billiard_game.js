@@ -4,7 +4,9 @@
     Hooray.defineClass('Billiard', '', 'Game', {
         init: function(gameContainerId, rules, table) {
             Hooray.log('A new Billiard.Game instance has been created!');
-            this.balls = this.initBalls(rules); // hash: ballId -> Billiard.Ball object
+            this.pubSub = new Hooray.PubSub();
+            this.eventProcessor = new Billiard.Event.EventProcessor(this.pubSub);
+            this.balls = this.initBalls(rules, this.pubSub); // hash: ballId -> Billiard.Ball object
             this.gameRenderEngine = new Billiard.GameRenderEngine(gameContainerId);
             this.table = table;
             this.gameLoop = new Billiard.GameLoop(this.gameRenderEngine, this.balls, this.table);
@@ -17,7 +19,7 @@
             });
         },
 
-        initBalls: function(rules) {
+        initBalls: function(rules, pubSub) {
             var positions   = rules.getBalls(), // hash: ballId -> position object
                 radius      = rules.getBallRadius(), // number
                 mass        = rules.getBallMass(), // number
@@ -31,7 +33,8 @@
                         positions[prop].x,
                         positions[prop].y,
                         radius,
-                        mass
+                        mass,
+                        pubSub
                     );
                 }
             }
