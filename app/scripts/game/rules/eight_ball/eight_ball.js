@@ -7,9 +7,14 @@
 
             this.radius = 20;
 
+            this.ballIdTpl = 'images/ball#.jpg';
+            var rack = this._getRack();
+            this.balls = this._getRackPositions(rack);
+
             this.mass = 1;
 
-            this.balls = {
+
+            /*this.balls = {
                 'images/ball0.jpg' : {x: -480 + (0*2+1)*this.radius, y: 0},
                 'images/ball1.jpg' : {x: -480 + (1*2+1)*this.radius, y: 0},
                 'images/ball2.jpg' : {x: -480 + (2*2+1)*this.radius, y: 0},
@@ -28,11 +33,70 @@
                 'images/ball15.jpg': {x: -480 + (15*2+1)*this.radius, y: 0}
 
 
-                /*'images/ball14.jpg': {x: -480 + this.radius, y: 15},
-                'images/ball15.jpg': {x:  480 - this.radius, y: -15}*/
-            };
+                // 'images/ball14.jpg': {x: -480 + this.radius, y: 15},
+                // 'images/ball15.jpg': {x:  480 - this.radius, y: -15}
+            };*/
         },
 
+        _id: function(n) {
+            if (Hooray.isUndefined(this.ballIdTpl)) {
+                throw new Error('this.ballIdTpl is not defined!');
+            }
+
+            return this.ballIdTpl.replace('#', n);
+        },
+
+        _getRack: function() {
+            var t = this;
+
+            return [
+                [t._id(1),  t._id(9), t._id(11), t._id(3), t._id(14)],
+                [t._id(10), t._id(8), t._id(13), t._id(6)],
+                [t._id(2),  t._id(7), t._id(5)],
+                [t._id(15), t._id(12)],
+                [t._id(4)]
+            ];
+        },
+
+        _getRackPositions: function(rack) {
+            var balls = {};
+
+            var rackRotation = -30 * (Math.PI / 180);
+            var offsetX = 150,
+                offsetY = 0,
+                rackOffsetX = 0,
+                rackOffsetY = 0,
+                ballId, x, y;
+
+            for (var i = 0; i < rack.length; i++) {
+                rackOffsetX = i * Math.cos(-1 * rackRotation) * this.radius * 2;
+                rackOffsetY = i * Math.sin(-1 * rackRotation) * this.radius * 2;
+
+                for (var j = 0; j < rack[i].length; j++) {
+                    ballId = rack[i][j];
+
+                    if (!i && !j) {
+                        // add white ball additionally to rack balls
+                        balls[this._id(0)] = {
+                            x: -300,
+                            y: 0
+                        };
+                    }
+
+                    x = offsetX + rackOffsetX + Math.cos(rackRotation) * this.radius * 2 * j;
+                    y = offsetY + rackOffsetY + Math.sin(rackRotation) * this.radius * 2 * j;
+
+                    balls[ballId] = {
+                        x: x,
+                        y: y
+                    };
+                }
+            }
+
+            return balls;
+        },
+
+        /* Public Interface */
         getBalls: function() {
             // return a cloned object
             var obj = {},
