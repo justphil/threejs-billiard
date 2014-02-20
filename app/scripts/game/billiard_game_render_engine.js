@@ -96,7 +96,7 @@
                 );
 
             camera.position.z = 400;
-            scene.add(this.camera);
+            scene.add(camera);
 
             Hooray.log(
                 'Initializing camera! [left, right, top, bottom, near, far]',
