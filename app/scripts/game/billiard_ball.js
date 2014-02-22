@@ -19,7 +19,7 @@
             this.vY         = 0; //Math.round(Math.random() * 20);
 
             if (id === 'images/ball0.jpg') {
-                this.vX = 0;
+                this.vX = 8;
                 this.vY = 0;
             }
 
@@ -39,7 +39,12 @@
             this.mesh.position.y += this.vY;
         },
 
-        rotate: function() {
+        translateByFraction: function(fraction) {
+            this.mesh.position.x += fraction * this.vX;
+            this.mesh.position.y += fraction * this.vY;
+        },
+
+        rotateByFraction: function(fraction) {
             var generalFrictionFactor = 0;
             var friction = 0;
             var currentVelocity = this.getVelocity();
@@ -51,8 +56,8 @@
 
                 // apply perfect ball rotation/rolling
                 // aka angular velocity perfectly corresponds to distance travelled
-                this.rotationHelper.rotateAroundWorldAxisX(this.mesh, -this.vY / this.radius);
-                this.rotationHelper.rotateAroundWorldAxisY(this.mesh, this.vX / this.radius);
+                this.rotationHelper.rotateAroundWorldAxisX(this.mesh, (-this.vY * fraction) / this.radius);
+                this.rotationHelper.rotateAroundWorldAxisY(this.mesh, (this.vX * fraction) / this.radius);
             }
             else {
                 // here the ball is still sliding and due to sliding friction it progressively starts to rotate
@@ -75,12 +80,12 @@
             this.applyAbsoluteFriction(friction, currentVelocity, vAngle, 0.05);
         },
 
-        rotateZ: function() {
+        rotateZByFraction: function(fraction) {
             // apply z rotation if available
             //var angularFriction = 0.0009;
-            var angularFriction = 0.0025;
+            var angularFriction = 0.0015;
             if (this.vAngularZ !== 0) {
-                this.rotationHelper.rotateAroundWorldAxisZ(this.mesh, this.vAngularZ);
+                this.rotationHelper.rotateAroundWorldAxisZ(this.mesh, this.vAngularZ * fraction);
 
                 if (this.vAngularZ > 0) {
                     if ((this.vAngularZ - angularFriction) < 0) {
@@ -200,82 +205,83 @@
             }
         },
 
-        handleBallCollision: function(anotherBall) {
-            if (this.vX === 0 && this.vY === 0 && anotherBall.vX === 0 && anotherBall.vY === 0) {
-                // two balls collide in the initial rack position -> ignore
-                return;
-            }
-
+        applyBallCollisionReaction: function(anotherBall) {
             var ball0 = this.mesh.position,
                 ball1 = anotherBall.mesh.position;
 
             var dx = ball1.x - ball0.x,
-                dy = ball1.y - ball0.y,
-                dist = Math.sqrt(dx * dx + dy * dy);
+                dy = ball1.y - ball0.y;
 
-            // check for collision based on radius
-            if (dist < this.radius + anotherBall.radius) {
-                var crh = this.coordsRotationHelper;
+            var crh = this.coordsRotationHelper;
 
-                // calculate angle, sine, and cosine
-                var angle = Math.atan2(dy, dx),
-                    sin = Math.sin(angle),
-                    cos = Math.cos(angle),
-                    e = 1,
-                // rotate ball0's position
-                    pos0 = {x: 0, y: 0}, //point
-                // rotate ball1's position
-                    pos1 = crh.rotateCoords(dx, dy, sin, cos, true),
-                // rotate ball0's velocity
-                    vel0 = crh.rotateCoords(this.vX, this.vY, sin, cos, true),
-                // rotate ball1's velocity
-                    vel1 = crh.rotateCoords(anotherBall.vX, anotherBall.vY, sin, cos, true);
+            // calculate angle, sine, and cosine
+            var angle = Math.atan2(dy, dx),
+                sin = Math.sin(angle),
+                cos = Math.cos(angle),
+                e = 1,
+            // rotate ball0's position
+                pos0 = {x: 0, y: 0}, //point
+            // rotate ball1's position
+                pos1 = crh.rotateCoords(dx, dy, sin, cos, true),
+            // rotate ball0's velocity
+                vel0 = crh.rotateCoords(this.vX, this.vY, sin, cos, true),
+            // rotate ball1's velocity
+                vel1 = crh.rotateCoords(anotherBall.vX, anotherBall.vY, sin, cos, true);
 
-                // apply conservation of momentum
-                var tmp = 1 / (this.mass + anotherBall.mass);
-                var newVxBall0 = (this.mass - e * anotherBall.mass) * vel0.x * tmp
-                                    + (1 + e) * anotherBall.mass * vel1.x * tmp;
+            // apply conservation of momentum
+            var tmp = 1 / (this.mass + anotherBall.mass);
+            var newVxBall0 = (this.mass - e * anotherBall.mass) * vel0.x * tmp
+                + (1 + e) * anotherBall.mass * vel1.x * tmp;
 
-                var newVxBall1 = (1 + e) * this.mass * vel0.x * tmp
-                                    + (anotherBall.mass - e * this.mass) * vel1.x * tmp;
+            var newVxBall1 = (1 + e) * this.mass * vel0.x * tmp
+                + (anotherBall.mass - e * this.mass) * vel1.x * tmp;
 
-                // apply friction due to oblique collision if it is an oblique collision
-                if (this.isObliqueBallCollision(vel0.x, vel0.y, dx, dy)) {
-                    //console.log('Oblique!');
-                    var fiveSeventh = 5 / 7;
-
-                    this.vAngularZ = -fiveSeventh * (vel0.y / this.radius);
-                    anotherBall.vAngularZ = fiveSeventh * (vel1.y / anotherBall.radius);
-
-                    //vel0.y = fiveSeventh * vel0.y;
-                    //vel1.y = fiveSeventh * vel1.y;
-                }
-
-                // update position to avoid that objects become stuck together
-                var absV = Math.abs(newVxBall0) + Math.abs(newVxBall1),
-                    overlap = (this.radius + anotherBall.radius) - Math.abs(pos0.x - pos1.x);
-                pos0.x += newVxBall0 / absV * overlap;
-                pos1.x += newVxBall1 / absV * overlap;
-
-                // rotate positions back
-                var pos0F = crh.rotateCoords(pos0.x, pos0.y, sin, cos, false),
-                    pos1F = crh.rotateCoords(pos1.x, pos1.y, sin, cos, false);
-
-                // adjust positions to actual screen positions
-                ball1.x = ball0.x + pos1F.x;
-                ball1.y = ball0.y + pos1F.y;
-                ball0.x = ball0.x + pos0F.x;
-                ball0.y = ball0.y + pos0F.y;
-
-                // rotate velocities back
-                var vel0F = crh.rotateCoords(newVxBall0, vel0.y, sin, cos, false),
-                    vel1F = crh.rotateCoords(newVxBall1, vel1.y, sin, cos, false);
-
-                this.vX = vel0F.x;
-                this.vY = vel0F.y;
-                anotherBall.vX = vel1F.x;
-                anotherBall.vY = vel1F.y;
+            // apply friction due to oblique collision if it is an oblique collision
+            var obliquenessDetectionVx, obliquenessDetectionVy;
+            if (vel0.x === 0 && vel0.y === 0) {
+                obliquenessDetectionVx = vel1.x;
+                obliquenessDetectionVy = vel1.y;
             }
+            else {
+                obliquenessDetectionVx = vel0.x;
+                obliquenessDetectionVy = vel0.y;
+            }
+
+            if (this.isObliqueBallCollision(obliquenessDetectionVx, obliquenessDetectionVy, dx, dy)) {
+                //console.log('Oblique!');
+                var fiveSeventh = 5 / 7;
+
+                this.vAngularZ = -fiveSeventh * (vel0.y / this.radius);
+                anotherBall.vAngularZ = fiveSeventh * (vel1.y / anotherBall.radius);
+
+                vel0.y = fiveSeventh * vel0.y;
+                vel1.y = fiveSeventh * vel1.y;
+            }
+
+            // update position to avoid that objects become stuck together
+            /*var absV = Math.abs(newVxBall0) + Math.abs(newVxBall1),
+             overlap = (this.radius + anotherBall.radius) - Math.abs(pos0.x - pos1.x);
+             pos0.x += newVxBall0 / absV * overlap;
+             pos1.x += newVxBall1 / absV * overlap;*/
+
+            // rotate positions back
+            var pos0F = crh.rotateCoords(pos0.x, pos0.y, sin, cos, false),
+                pos1F = crh.rotateCoords(pos1.x, pos1.y, sin, cos, false);
+
+            // adjust positions to actual screen positions
+            ball1.x = ball0.x + pos1F.x;
+            ball1.y = ball0.y + pos1F.y;
+            ball0.x = ball0.x + pos0F.x;
+            ball0.y = ball0.y + pos0F.y;
+
+            // rotate velocities back
+            var vel0F = crh.rotateCoords(newVxBall0, vel0.y, sin, cos, false),
+                vel1F = crh.rotateCoords(newVxBall1, vel1.y, sin, cos, false);
+
+            this.vX = vel0F.x;
+            this.vY = vel0F.y;
+            anotherBall.vX = vel1F.x;
+            anotherBall.vY = vel1F.y;
         },
 
         isObliqueBallCollision: function(vX0, vY0, vX1, vY1) {
@@ -296,6 +302,66 @@
 
             // the collision is oblique if the angle is not a multiple of PI/2
             return (angle % (Math.PI/2)) !== 0;
+        },
+
+        // TODO: optimize this function by reusing the helper vector objects!
+        predictCollisionWith: function(anotherBall) {
+            // this = p, anotherBall = q
+
+            var a, b, c, t1, t2;
+            var tmp1 = new THREE.Vector2(0, 0),
+                tmp2 = new THREE.Vector2(0, 0),
+                tmp1Length, tmp2Length, rSum, helper;
+
+            // this ball
+            var p0 = new THREE.Vector2(
+                this.mesh.position.x,
+                this.mesh.position.y
+            );
+
+            var pf = new THREE.Vector2(
+                this.mesh.position.x + this.vX,
+                this.mesh.position.y + this.vY
+            );
+
+            var dp = pf.sub(p0);
+
+            // another ball
+            var q0 = new THREE.Vector2(
+                anotherBall.mesh.position.x,
+                anotherBall.mesh.position.y
+            );
+
+            var qf = new THREE.Vector2(
+                anotherBall.mesh.position.x + anotherBall.vX,
+                anotherBall.mesh.position.y + anotherBall.vY
+            );
+
+            var dq = qf.sub(q0);
+
+
+            // calculate a for the pq-formula
+            tmp1.subVectors(dq, dp);
+            tmp1Length = tmp1.length();
+            a = tmp1Length * tmp1Length;
+
+            // calculate b for the pq-formula
+            tmp2.subVectors(q0, p0);
+            tmp2.multiplyScalar(2);
+            b = tmp2.dot(tmp1);
+
+            // calculate c for the pq-formula
+            tmp2.subVectors(q0, p0);
+            tmp2Length = tmp2.length();
+            rSum = this.radius + anotherBall.radius;
+            c = (tmp2Length * tmp2Length) - ( rSum * rSum );
+
+            // calculate solution according to pq-formula
+            helper = Math.sqrt( ( b * b ) - ( 4 * a * c ) );
+            t1 = (-b + helper) / (2 * a);
+            t2 = (-b - helper) / (2 * a);
+
+            return Math.min(t1, t2);
         }
     });
 

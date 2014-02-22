@@ -33,8 +33,8 @@
                 'images/ball15.jpg': {x: -480 + (15*2+1)*this.radius, y: 0}
 
 
-                // 'images/ball14.jpg': {x: -480 + this.radius, y: 15},
-                // 'images/ball15.jpg': {x:  480 - this.radius, y: -15}
+                // 'images/ball14.jpg': {x: -480 + this.radius, y: 18},
+                // 'images/ball15.jpg': {x:  480 - this.radius, y: -18}
             };*/
         },
 
@@ -69,8 +69,8 @@
                 ballId, x, y;
 
             for (var i = 0; i < rack.length; i++) {
-                rackOffsetX = i * Math.cos(-1 * rackRotation) * this.radius * 2;
-                rackOffsetY = i * Math.sin(-1 * rackRotation) * this.radius * 2;
+                rackOffsetX = i * Math.cos(-1 * rackRotation) * (this.radius + 1) * 2;
+                rackOffsetY = i * Math.sin(-1 * rackRotation) * (this.radius + 1) * 2;
 
                 for (var j = 0; j < rack[i].length; j++) {
                     ballId = rack[i][j];
@@ -83,8 +83,8 @@
                         };
                     }
 
-                    x = offsetX + rackOffsetX + Math.cos(rackRotation) * this.radius * 2 * j;
-                    y = offsetY + rackOffsetY + Math.sin(rackRotation) * this.radius * 2 * j;
+                    x = offsetX + rackOffsetX + Math.cos(rackRotation) * (this.radius + 1) * 2 * j;
+                    y = offsetY + rackOffsetY + Math.sin(rackRotation) * (this.radius + 1) * 2 * j;
 
                     balls[ballId] = {
                         x: x,
