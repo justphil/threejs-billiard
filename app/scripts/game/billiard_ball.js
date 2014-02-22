@@ -30,6 +30,16 @@
             this.rotationHelper = Billiard.Helper.RotationHelper;
             this.coordsRotationHelper = Billiard.Helper.CoordsRotationHelper;
 
+            /* create some helper vectors that will be used for collision detection */
+            this.helperVectors = {
+                p0: new THREE.Vector2(0, 0),
+                pf: new THREE.Vector2(0, 0),
+                q0: new THREE.Vector2(0, 0),
+                qf: new THREE.Vector2(0, 0),
+                tmp1: new THREE.Vector2(0, 0),
+                tmp2: new THREE.Vector2(0, 0)
+            };
+
             this.pubSub = pubSub;
 
             // !!! A Billiard.Ball object will be augmented with a mesh property during initialization !!!
@@ -288,38 +298,29 @@
             return (angle % (Math.PI/2)) !== 0;
         },
 
-        // TODO: optimize this function by reusing the helper vector objects!
         predictCollisionWith: function(anotherBall) {
             // this = p, anotherBall = q
 
             var a, b, c, t1, t2;
-            var tmp1 = new THREE.Vector2(0, 0),
-                tmp2 = new THREE.Vector2(0, 0),
+            var tmp1 = this.helperVectors.tmp1,
+                tmp2 = this.helperVectors.tmp2,
                 tmp1Length, tmp2Length, rSum, helper;
 
             // this ball
-            var p0 = new THREE.Vector2(
-                this.mesh.position.x,
-                this.mesh.position.y
-            );
+            var p0 = this.helperVectors.p0;
+            p0.set(this.mesh.position.x, this.mesh.position.y);
 
-            var pf = new THREE.Vector2(
-                this.mesh.position.x + this.vX,
-                this.mesh.position.y + this.vY
-            );
+            var pf = this.helperVectors.pf;
+            pf.set(this.mesh.position.x + this.vX, this.mesh.position.y + this.vY);
 
             var dp = pf.sub(p0);
 
             // another ball
-            var q0 = new THREE.Vector2(
-                anotherBall.mesh.position.x,
-                anotherBall.mesh.position.y
-            );
+            var q0 = this.helperVectors.q0;
+            q0.set(anotherBall.mesh.position.x, anotherBall.mesh.position.y);
 
-            var qf = new THREE.Vector2(
-                anotherBall.mesh.position.x + anotherBall.vX,
-                anotherBall.mesh.position.y + anotherBall.vY
-            );
+            var qf = this.helperVectors.qf;
+            qf.set(anotherBall.mesh.position.x + anotherBall.vX, anotherBall.mesh.position.y + anotherBall.vY);
 
             var dq = qf.sub(q0);
 
