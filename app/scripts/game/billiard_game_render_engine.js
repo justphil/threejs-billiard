@@ -21,7 +21,7 @@
             this.camera = this.initCamera(this.gameContainer, this.scene);
 
             // init light
-            this.light = this.initLight();
+            this.light = this.initLight(this.scene);
         },
 
         initGameRenderEngine: function(assets) {
@@ -106,10 +106,11 @@
             return camera;
         },
 
-        initLight: function() {
+        initLight: function(scene) {
             var light = new THREE.DirectionalLight(0xFFFFFF, 1);
+
             light.position.set(0, 0, 1);
-            this.scene.add(light);
+            scene.add(light);
 
             return light;
         }
