@@ -15,13 +15,14 @@
             //this.frictionCoefficientBillard = 0.2;
             //this.gravitationalConstant = 9.81;
 
-            this.vX         = Math.round(-20 + Math.random() * 40);
-            this.vY         = Math.round(-20 + Math.random() * 40);
+            this.vX         = 0; // Math.round(-20 + Math.random() * 40);
+            this.vY         = 0; // Math.round(-20 + Math.random() * 40);
 
-            /*if (id === 'images/ball0.jpg') {
-                this.vX = 10;
+            if (id === 'images/ball0.jpg') {
+                this.mass = 5;
+                this.vX = 30;
                 this.vY = 0;
-            }*/
+            }
 
 
             this.vAngular   = 0;
@@ -43,11 +44,6 @@
             this.pubSub = pubSub;
 
             // !!! A Billiard.Ball object will be augmented with a mesh property during initialization !!!
-        },
-
-        translate: function() {
-            this.mesh.position.x += this.vX;
-            this.mesh.position.y += this.vY;
         },
 
         translateByFraction: function(fraction) {
