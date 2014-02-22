@@ -15,17 +15,14 @@
             //this.frictionCoefficientBillard = 0.2;
             //this.gravitationalConstant = 9.81;
 
-            this.vX         = 0; // Math.round(Math.random() * 20);
-            this.vY         = 0; //Math.round(Math.random() * 20);
+            this.vX         = Math.round(-20 + Math.random() * 40);
+            this.vY         = Math.round(-20 + Math.random() * 40);
 
-            if (id === 'images/ball14.jpg') {
+            /*if (id === 'images/ball0.jpg') {
                 this.vX = 10;
                 this.vY = 0;
-            }
-            else {
-                this.vX = -10;
-                this.vY = 0;
-            }
+            }*/
+
 
             this.vAngular   = 0;
             this.vAngularZ  = 0;
@@ -81,8 +78,6 @@
             }
 
             return friction + (currentVelocity * generalFrictionFactor);
-
-            // this.applyAbsoluteFriction(friction, currentVelocity, vAngle, 0.05);
         },
 
         rotateZ: function() {
@@ -262,22 +257,6 @@
                 vel0.y = fiveSeventh * vel0.y;
                 vel1.y = fiveSeventh * vel1.y;
             }
-
-            // update position to avoid that objects become stuck together
-            /*var absV = Math.abs(newVxBall0) + Math.abs(newVxBall1),
-             overlap = (this.radius + anotherBall.radius) - Math.abs(pos0.x - pos1.x);
-             pos0.x += newVxBall0 / absV * overlap;
-             pos1.x += newVxBall1 / absV * overlap;*/
-
-            // rotate positions back
-            /*var pos0F = crh.rotateCoords(pos0.x, pos0.y, sin, cos, false),
-                pos1F = crh.rotateCoords(pos1.x, pos1.y, sin, cos, false);*/
-
-            // adjust positions to actual screen positions
-            /*ball1.x = ball0.x + pos1F.x;
-            ball1.y = ball0.y + pos1F.y;
-            ball0.x = ball0.x + pos0F.x;
-            ball0.y = ball0.y + pos0F.y;*/
 
             // rotate velocities back
             var vel0F = crh.rotateCoords(newVxBall0, vel0.y, sin, cos, false),

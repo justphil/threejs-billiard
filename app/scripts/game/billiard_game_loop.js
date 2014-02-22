@@ -62,23 +62,6 @@
                 ball.applyAbsoluteFriction(frictions[i], ball.getVelocity(), ball.getVelocityAngle(), 0.05);
                 ball.rotateZ();
             }
-
-            // old loop
-            /*for (i = 0, n = ba.length; i < n; i++) {
-                ballA = ba[i];
-                ballA.translate();
-                ballA.rotate();
-                ballA.rotateZ();
-                ballA.handleCushionCollision(this.table);
-
-                // optimization to eliminate double collision checking between two balls
-                if (i < (n-1)) {
-                    for (j = i + 1; j < n; j++) {
-                        ballB = ba[j];
-                        ballA.handleBallCollision(ballB);
-                    }
-                }
-            }*/
         },
 
         /*  #### #### #### */
@@ -123,7 +106,7 @@
                         ballB = ba[j];
                         t = ballA.predictCollisionWith(ballB);
                         if (t >= 0 && t <= 1) {
-                            console.log('A collision will happen at t = ' + t + ' ('+ballA.id+' -> '+ballB.id+')');
+                            //console.log('A collision will happen at t = ' + t + ' ('+ballA.id+' -> '+ballB.id+')');
                             frameCollisions.push({
                                 t: t,
                                 ballA: ballA,
