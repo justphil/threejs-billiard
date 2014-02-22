@@ -22,7 +22,8 @@
         /* #### #### #### */
 
         mainGameLoop: function() {
-            var t, collisions,
+            var i, n, t, collisions, frictions, ball,
+                ba = this.ballsArray,
                 remainingFrameTime = 1;
 
             while (remainingFrameTime > 0) {
@@ -33,23 +34,34 @@
                     // sort the collisions according to their occurrence time (asc)
                     collisions.sort(this.compareCollisionTime);
 
-                    // move, rotate etc. all balls to the time of the first collision
+                    // translate all balls to the time of the first collision
                     t = collisions[0].t;
-                    this.moveAllBallsByFraction(t);
+                    frictions = this.translateAllBallsByFraction(t);
 
-                    // apply collision reaction for the first collision
-                    collisions[0].ballA.applyBallCollisionReaction(collisions[0].ballB);
+                    // potentially there can be more collisions at the same time t -> check for it
+                    collisions = this.getBallCollisionsAt(t, collisions);
+
+                    // apply collision reaction for all collisions at time t
+                    for (i = 0, n = collisions.length; i < n; i++) {
+                        collisions[i].ballA.applyBallCollisionReaction(collisions[i].ballB);
+                    }
 
                     // decrease remaining frame time accordingly
                     remainingFrameTime = remainingFrameTime - t;
                 }
                 else {
-                    // move, rotate etc. all balls for the remaining frame time
-                    this.moveAllBallsByFraction(remainingFrameTime);
+                    // translate all balls for the remaining frame time
+                    frictions = this.translateAllBallsByFraction(remainingFrameTime);
                     break;
                 }
             }
 
+            // apply general loop for friction and z-rotation
+            for (i = 0, n = ba.length; i < n; i++) {
+                ball = ba[i];
+                ball.applyAbsoluteFriction(frictions[i], ball.getVelocity(), ball.getVelocityAngle(), 0.05);
+                ball.rotateZ();
+            }
 
             // old loop
             /*for (i = 0, n = ba.length; i < n; i++) {
@@ -73,17 +85,27 @@
         /*  #### #### #### */
         /*</MAIN GAME LOOP>*/
 
-        moveAllBallsByFraction: function(fraction) {
+        translateAllBallsByFraction: function(fraction) {
             var i, n, ballA,
+                frictions = [],
                 ba = this.ballsArray;
 
             for (i = 0, n = ba.length; i < n; i++) {
                 ballA = ba[i];
                 ballA.translateByFraction(fraction);
-                //ballA.rotateByFraction(fraction);
-                //ballA.rotateZByFraction(fraction);
+
+                frictions[i] = ballA.rotateByFraction(fraction);
+
                 ballA.handleCushionCollision(this.table);
             }
+
+            return frictions;
+        },
+
+        getBallCollisionsAt: function(t, orderedCollisions) {
+            return orderedCollisions.filter(function(collision) {
+                return collision.t === t;
+            });
         },
 
         determineAllBallCollisions: function() {

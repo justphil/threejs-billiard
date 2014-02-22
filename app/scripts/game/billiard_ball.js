@@ -18,8 +18,12 @@
             this.vX         = 0; // Math.round(Math.random() * 20);
             this.vY         = 0; //Math.round(Math.random() * 20);
 
-            if (id === 'images/ball0.jpg') {
-                this.vX = 8;
+            if (id === 'images/ball14.jpg') {
+                this.vX = 10;
+                this.vY = 0;
+            }
+            else {
+                this.vX = -10;
                 this.vY = 0;
             }
 
@@ -76,16 +80,17 @@
                 this.rotationHelper.rotateAroundWorldAxisY(this.mesh, this.vAngular * Math.cos(vAngle));
             }
 
-            friction = friction + (currentVelocity * generalFrictionFactor);
-            this.applyAbsoluteFriction(friction, currentVelocity, vAngle, 0.05);
+            return friction + (currentVelocity * generalFrictionFactor);
+
+            // this.applyAbsoluteFriction(friction, currentVelocity, vAngle, 0.05);
         },
 
-        rotateZByFraction: function(fraction) {
+        rotateZ: function() {
             // apply z rotation if available
             //var angularFriction = 0.0009;
-            var angularFriction = 0.0015;
+            var angularFriction = 0.002;
             if (this.vAngularZ !== 0) {
-                this.rotationHelper.rotateAroundWorldAxisZ(this.mesh, this.vAngularZ * fraction);
+                this.rotationHelper.rotateAroundWorldAxisZ(this.mesh, this.vAngularZ);
 
                 if (this.vAngularZ > 0) {
                     if ((this.vAngularZ - angularFriction) < 0) {
@@ -220,9 +225,9 @@
                 cos = Math.cos(angle),
                 e = 1,
             // rotate ball0's position
-                pos0 = {x: 0, y: 0}, //point
+                //pos0 = {x: 0, y: 0}, //point
             // rotate ball1's position
-                pos1 = crh.rotateCoords(dx, dy, sin, cos, true),
+                //pos1 = crh.rotateCoords(dx, dy, sin, cos, true),
             // rotate ball0's velocity
                 vel0 = crh.rotateCoords(this.vX, this.vY, sin, cos, true),
             // rotate ball1's velocity
@@ -265,14 +270,14 @@
              pos1.x += newVxBall1 / absV * overlap;*/
 
             // rotate positions back
-            var pos0F = crh.rotateCoords(pos0.x, pos0.y, sin, cos, false),
-                pos1F = crh.rotateCoords(pos1.x, pos1.y, sin, cos, false);
+            /*var pos0F = crh.rotateCoords(pos0.x, pos0.y, sin, cos, false),
+                pos1F = crh.rotateCoords(pos1.x, pos1.y, sin, cos, false);*/
 
             // adjust positions to actual screen positions
-            ball1.x = ball0.x + pos1F.x;
+            /*ball1.x = ball0.x + pos1F.x;
             ball1.y = ball0.y + pos1F.y;
             ball0.x = ball0.x + pos0F.x;
-            ball0.y = ball0.y + pos0F.y;
+            ball0.y = ball0.y + pos0F.y;*/
 
             // rotate velocities back
             var vel0F = crh.rotateCoords(newVxBall0, vel0.y, sin, cos, false),
