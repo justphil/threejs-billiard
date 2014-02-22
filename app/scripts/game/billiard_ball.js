@@ -20,7 +20,7 @@
 
             if (id === 'images/ball0.jpg') {
                 this.mass = 5;
-                this.vX = 30;
+                this.vX = 24;
                 this.vY = 0;
             }
 

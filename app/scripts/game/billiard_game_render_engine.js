@@ -22,6 +22,9 @@
 
             // init light
             this.light = this.initLight(this.scene);
+
+            // init cue
+            this.cue = this.initCue(this.scene);
         },
 
         initGameRenderEngine: function(assets) {
@@ -33,7 +36,7 @@
                 // create three.js sphere that represents a ball and add it to the scene
                 for (assetId in assets) {
                     if (assets.hasOwnProperty(assetId)) {
-                        geometry = new THREE.SphereGeometry(assets[assetId].radius, 16, 16);
+                        geometry = new THREE.SphereGeometry(assets[assetId].radius, 24, 24);
                         material = new THREE.MeshPhongMaterial({
                             map: mapHash[assetId]
                             //shininess: 52
@@ -113,6 +116,19 @@
             scene.add(light);
 
             return light;
+        },
+
+        initCue: function(scene) {
+            var geometry = new THREE.PlaneGeometry( 6, 480 );
+            var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+            var plane = new THREE.Mesh( geometry, material );
+
+            plane.position.z = 20;
+            plane.rotation.z = Math.PI / 2;
+
+            scene.add( plane );
+
+            return plane;
         }
     });
 
