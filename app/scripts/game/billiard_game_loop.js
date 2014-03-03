@@ -2,10 +2,11 @@
     "use strict";
 
     Hooray.defineClass('Billiard', '', 'GameLoop', {
-        init: function(gameRenderEngine, balls, table) {
+        init: function(gameRenderEngine, balls, cues, table) {
             Hooray.log('A new Billiard.GameLoop instance has been created!');
             this.gameRenderEngine = gameRenderEngine;
             this.balls = balls;
+            this.cues = cues;
             this.table = table;
 
             // create an array out of the balls hash due to fixed order and easier iteration in mainGameLoop
@@ -22,7 +23,7 @@
         /* #### #### #### */
 
         mainGameLoop: function() {
-            var i, n, t, collisions, frictions, ball,
+            var i, n, t, collisions, frictions, ball, cueId,
                 ba = this.ballsArray,
                 remainingFrameTime = 1;
 
@@ -61,6 +62,13 @@
                 ball = ba[i];
                 ball.applyAbsoluteFriction(frictions[i], ball.getVelocity(), ball.getVelocityAngle(), 0.05);
                 ball.rotateZ();
+            }
+
+            // render cues
+            for (cueId in this.cues) {
+                if (this.cues.hasOwnProperty(cueId)) {
+                    this.cues[cueId].update();
+                }
             }
         },
 

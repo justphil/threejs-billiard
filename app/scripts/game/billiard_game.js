@@ -7,14 +7,15 @@
             this.pubSub = new Hooray.PubSub();
             this.eventProcessor = new Billiard.Event.EventProcessor(this.pubSub);
             this.balls = this.initBalls(rules, this.pubSub); // hash: ballId -> Billiard.Ball object
+            this.cues = this.initCues(111, 222);
             this.gameRenderEngine = new Billiard.GameRenderEngine(gameContainerId);
             this.table = table;
-            this.gameLoop = new Billiard.GameLoop(this.gameRenderEngine, this.balls, this.table);
+            this.gameLoop = new Billiard.GameLoop(this.gameRenderEngine, this.balls, this.cues, this.table);
         },
 
         prepare: function() {
             var that = this;
-            return this.gameRenderEngine.initGameRenderEngine(this.balls).then(function(renderFn) {
+            return this.gameRenderEngine.initGameRenderEngine(this.balls, this.cues).then(function(renderFn) {
                 that.renderFn = renderFn;
             });
         },
@@ -40,6 +41,15 @@
             }
 
             return balls;
+        },
+
+        initCues: function(player1Id, player2Id) {
+            var cues = {};
+
+            cues[player1Id] = new Billiard.Cue(player1Id);
+            cues[player2Id] = new Billiard.Cue(player2Id);
+
+            return cues;
         },
 
         start: function() {

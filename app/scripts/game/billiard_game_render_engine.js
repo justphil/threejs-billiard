@@ -22,40 +22,63 @@
 
             // init light
             this.light = this.initLight(this.scene);
-
-            // init cue
-            this.cue = this.initCue(this.scene);
         },
 
-        initGameRenderEngine: function(assets) {
+        initGameRenderEngine: function(balls, cues) {
             var that = this;
-            var assetId, geometry, material, sphere;
+            var ballId, cueId, geometry, material, sphere, plane;
             var rh = Billiard.Helper.RotationHelper;
 
-            return this.assetLoader.getMaps(Object.keys(assets)).then(function(mapHash) {
+            var promises = [];
+
+            // load ball textures
+            var ballTexturesPromise = this.assetLoader.getMaps(Object.keys(balls)).then(function(mapHash) {
                 // create three.js sphere that represents a ball and add it to the scene
-                for (assetId in assets) {
-                    if (assets.hasOwnProperty(assetId)) {
-                        geometry = new THREE.SphereGeometry(assets[assetId].radius, 24, 24);
+                for (ballId in balls) {
+                    if (balls.hasOwnProperty(ballId)) {
+                        geometry = new THREE.SphereGeometry(balls[ballId].radius, 24, 24);
                         material = new THREE.MeshPhongMaterial({
-                            map: mapHash[assetId]
+                            map: mapHash[ballId]
                             //shininess: 52
                             //color: 0x00FF00
                         });
                         sphere = new THREE.Mesh(geometry, material);
-                        sphere.position.x = assets[assetId].initX;
-                        sphere.position.y = assets[assetId].initY;
+                        sphere.position.x = balls[ballId].initX;
+                        sphere.position.y = balls[ballId].initY;
 
                         // adjust rotation because the textures has got a particular offset
                         rh.rotateAroundWorldAxisY(sphere, -Math.PI/2);
 
                         that.scene.add(sphere);
 
-                        // augment the asset with the created mesh
-                        assets[assetId].mesh = sphere;
+                        // augment the ball with the created mesh
+                        balls[ballId].mesh = sphere;
                     }
                 }
+            });
+            promises.push(ballTexturesPromise);
 
+            // TODO: load cue textures in the future
+            for (cueId in cues) {
+                if (cues.hasOwnProperty(cueId)) {
+                    geometry = new THREE.PlaneGeometry( 6, 480 );
+                    material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+                    plane = new THREE.Mesh( geometry, material );
+
+                    plane.position.z = 20;
+                    //plane.rotation.z = Math.PI / 2;
+
+                    that.scene.add( plane );
+
+                    // augment the cue with the created mesh
+                    cues[cueId].mesh = plane;
+
+                    // augment the cue with the gameContainer DOM element
+                    cues[cueId].gameContainerDomElement = that.gameContainer.domElement;
+                }
+            }
+
+            return Q.all(promises).then(function() {
                 return function() {
                     that.render();
                 };
@@ -116,19 +139,6 @@
             scene.add(light);
 
             return light;
-        },
-
-        initCue: function(scene) {
-            var geometry = new THREE.PlaneGeometry( 6, 480 );
-            var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-            var plane = new THREE.Mesh( geometry, material );
-
-            plane.position.z = 20;
-            plane.rotation.z = Math.PI / 2;
-
-            scene.add( plane );
-
-            return plane;
         }
     });
 
