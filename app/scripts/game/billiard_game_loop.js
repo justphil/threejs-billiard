@@ -93,17 +93,18 @@
         /*</MAIN GAME LOOP>*/
 
         translateAllBallsByFraction: function(fraction) {
-            var i, n, ballA,
+            var i, n, ball,
                 frictions = [],
                 ba = this.ballsArray;
 
             for (i = 0, n = ba.length; i < n; i++) {
-                ballA = ba[i];
-                ballA.translateByFraction(fraction);
+                ball = ba[i];
+                ball.translateByFraction(fraction);
 
-                frictions[i] = ballA.rotateByFraction(fraction);
+                frictions[i] = ball.rotateByFraction(fraction);
 
-                ballA.handleCushionCollision(this.table);
+
+                ball.handleCushionCollision(this.table);
             }
 
             return frictions;
