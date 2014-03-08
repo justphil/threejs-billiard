@@ -10,12 +10,41 @@
 
             var pocketRadius = 24;
             this.pockets = {
-                top: {x: 0, y: (playingFieldHeight / 2) - pocketRadius},
-                topLeft: {x: -(playingFieldWidth / 2) + pocketRadius, y: (playingFieldHeight / 2) - pocketRadius},
-                topRight: {x: (playingFieldWidth / 2) - pocketRadius, y: (playingFieldHeight / 2) - pocketRadius},
-                bottom: {x: 0, y: -(playingFieldHeight / 2) + pocketRadius},
-                bottomLeft: {x: -(playingFieldWidth / 2) + pocketRadius, y: -(playingFieldHeight / 2) + pocketRadius},
-                bottomRight: {x: (playingFieldWidth / 2) - pocketRadius, y: -(playingFieldHeight / 2) + pocketRadius}
+                top: {
+                    x: 0,
+                    y: (playingFieldHeight / 2) - pocketRadius,
+                    radius: pocketRadius
+                },
+
+                topLeft: {
+                    x: -(playingFieldWidth / 2) + pocketRadius,
+                    y: (playingFieldHeight / 2) - pocketRadius,
+                    radius: pocketRadius
+                },
+
+                topRight: {
+                    x: (playingFieldWidth / 2) - pocketRadius,
+                    y: (playingFieldHeight / 2) - pocketRadius,
+                    radius: pocketRadius
+                },
+
+                bottom: {
+                    x: 0,
+                    y: -(playingFieldHeight / 2) + pocketRadius,
+                    radius: pocketRadius
+                },
+
+                bottomLeft: {
+                    x: -(playingFieldWidth / 2) + pocketRadius,
+                    y: -(playingFieldHeight / 2) + pocketRadius,
+                    radius: pocketRadius
+                },
+
+                bottomRight: {
+                    x: (playingFieldWidth / 2) - pocketRadius,
+                    y: -(playingFieldHeight / 2) + pocketRadius,
+                    radius: pocketRadius
+                }
             };
         },
 
