@@ -11,7 +11,7 @@
             this.gameRenderEngine = new Billiard.GameRenderEngine(gameContainerId);
             this.table = table;
             this.pockets = this.initPockets(table);
-            this.gameLoop = new Billiard.GameLoop(this.gameRenderEngine, this.balls, this.cues, this.table);
+            this.gameLoop = new Billiard.GameLoop(this.gameRenderEngine, this.table, this.balls, this.cues);
         },
 
         prepare: function() {

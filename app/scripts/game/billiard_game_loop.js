@@ -2,7 +2,7 @@
     "use strict";
 
     Hooray.defineClass('Billiard', '', 'GameLoop', {
-        init: function(gameRenderEngine, balls, cues, table) {
+        init: function(gameRenderEngine, table, balls, cues) {
             Hooray.log('A new Billiard.GameLoop instance has been created!');
             this.gameRenderEngine = gameRenderEngine;
             this.balls = balls;
@@ -62,6 +62,13 @@
                 ball = ba[i];
                 ball.applyAbsoluteFriction(frictions[i], ball.getVelocity(), ball.getVelocityAngle(), 0.05);
                 ball.rotateZ();
+
+                // TODO: Remove experimental cowboy code
+                if (ball.id === 'images/ball0.jpg') {
+                    ball.mesh.scale.x -= 0.001;
+                    ball.mesh.scale.y -= 0.001;
+                    ball.mesh.scale.z -= 0.001;
+                }
             }
 
             // render cues
