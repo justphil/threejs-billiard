@@ -24,9 +24,9 @@
             this.light = this.initLight(this.scene);
         },
 
-        initGameRenderEngine: function(balls, cues) {
+        initGameRenderEngine: function(balls, cues, pockets) {
             var that = this;
-            var ballId, cueId, geometry, material, sphere, plane;
+            var ballId, cueId, pocketId, geometry, material, sphere, plane, pocket;
             var rh = Billiard.Helper.RotationHelper;
 
             var promises = [];
@@ -85,6 +85,21 @@
 
                     // augment the cue with the gameContainer DOM element
                     cues[cueId].augment('gameContainer', that.gameContainer);
+                }
+            }
+
+            // TODO: load pocket textures in the future
+            for (pocketId in pockets) {
+                if (pockets.hasOwnProperty(pocketId)) {
+                    material = new THREE.MeshBasicMaterial({color: 0xffff00});
+                    geometry = new THREE.CircleGeometry(pockets[pocketId].radius, 32);
+                    pocket = new THREE.Mesh(geometry, material);
+                    pocket.position.x = pockets[pocketId].x;
+                    pocket.position.y = pockets[pocketId].y;
+                    that.scene.add(pocket);
+
+                    // augment the pocket with the created mesh
+                    pockets[pocketId].augment('mesh', pocket);
                 }
             }
 

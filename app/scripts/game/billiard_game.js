@@ -10,12 +10,15 @@
             this.cues = this.initCues(111, 222);
             this.gameRenderEngine = new Billiard.GameRenderEngine(gameContainerId);
             this.table = table;
+            this.pockets = this.initPockets(table);
             this.gameLoop = new Billiard.GameLoop(this.gameRenderEngine, this.balls, this.cues, this.table);
         },
 
         prepare: function() {
             var that = this;
-            return this.gameRenderEngine.initGameRenderEngine(this.balls, this.cues).then(function(renderFn) {
+            return this.gameRenderEngine.initGameRenderEngine(
+                this.balls, this.cues, this.pockets
+            ).then(function(renderFn) {
                 that.renderFn = renderFn;
             });
         },
@@ -50,6 +53,23 @@
             //cues[player2Id] = new Billiard.Cue(player2Id);
 
             return cues;
+        },
+
+        initPockets: function(table) {
+            var pockets = {};
+            var pocketData = table.getPockets();
+
+            for (var pocketId in pocketData) {
+                if (pocketData.hasOwnProperty(pocketId)) {
+                    pockets[pocketId] = new Billiard.Pocket(
+                        pocketData[pocketId].x,
+                        pocketData[pocketId].y,
+                        pocketData[pocketId].radius
+                    );
+                }
+            }
+
+            return pockets;
         },
 
         start: function() {
