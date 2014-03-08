@@ -33,5 +33,20 @@
         return mouse;
     }
 
+    function registerClickHandler(element, handler) {
+        element.addEventListener('click', handler);
+    }
+
+    function browserCoordsToThreeCoords(x, y, gameContainerWidth, gameContainerHeight) {
+        var obj = {};
+
+        obj.x = x  - (gameContainerWidth / 2);
+        obj.y = -y + (gameContainerHeight / 2);
+
+        return obj;
+    }
+
     Hooray.define('', 'Input.Mouse', 'capture', capture);
+    Hooray.define('', 'Input.Mouse', 'browserCoordsToThreeCoords', browserCoordsToThreeCoords);
+    Hooray.define('', 'Input.Mouse', 'registerClickHandler', registerClickHandler);
 })(window, Hooray);

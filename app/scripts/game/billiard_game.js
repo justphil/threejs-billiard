@@ -47,7 +47,7 @@
             var cues = {};
 
             cues[player1Id] = new Billiard.Cue(player1Id);
-            cues[player2Id] = new Billiard.Cue(player2Id);
+            //cues[player2Id] = new Billiard.Cue(player2Id);
 
             return cues;
         },

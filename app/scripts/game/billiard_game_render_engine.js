@@ -53,6 +53,16 @@
 
                         // augment the ball with the created mesh
                         balls[ballId].mesh = sphere;
+
+                        // TODO: this must be solved in a better way
+                        // augment cues with ball0 property
+                        if (ballId === 'images/ball0.jpg') {
+                            for (cueId in cues) {
+                                if (cues.hasOwnProperty(cueId)) {
+                                    cues[cueId].augment('ball0', balls[ballId]);
+                                }
+                            }
+                        }
                     }
                 }
             });
@@ -66,15 +76,15 @@
                     plane = new THREE.Mesh( geometry, material );
 
                     plane.position.z = 20;
-                    //plane.rotation.z = Math.PI / 2;
+                    //plane.rotation.z = Math.PI / 4;
 
                     that.scene.add( plane );
 
                     // augment the cue with the created mesh
-                    cues[cueId].mesh = plane;
+                    cues[cueId].augment('mesh', plane);
 
                     // augment the cue with the gameContainer DOM element
-                    cues[cueId].gameContainerDomElement = that.gameContainer.domElement;
+                    cues[cueId].augment('gameContainer', that.gameContainer);
                 }
             }
 
