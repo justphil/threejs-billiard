@@ -7,6 +7,16 @@
             this.playingFieldWidth  = playingFieldWidth;
             this.playingFieldHeight = playingFieldHeight;
             this.backgroundTexture  = 'images/table_default.png';
+
+            var pocketRadius = 24;
+            this.pockets = {
+                top: {x: 0, y: (playingFieldHeight / 2) - pocketRadius},
+                topLeft: {x: -(playingFieldWidth / 2) + pocketRadius, y: (playingFieldHeight / 2) - pocketRadius},
+                topRight: {x: (playingFieldWidth / 2) - pocketRadius, y: (playingFieldHeight / 2) - pocketRadius},
+                bottom: {x: 0, y: -(playingFieldHeight / 2) + pocketRadius},
+                bottomLeft: {x: -(playingFieldWidth / 2) + pocketRadius, y: -(playingFieldHeight / 2) + pocketRadius},
+                bottomRight: {x: (playingFieldWidth / 2) - pocketRadius, y: -(playingFieldHeight / 2) + pocketRadius}
+            };
         },
 
         getPlayingFieldWidth: function() {
@@ -19,6 +29,10 @@
 
         getBackgroundTexture: function() {
             return this.backgroundTexture;
+        },
+
+        getPockets: function() {
+            return this.pockets;
         }
     });
 
