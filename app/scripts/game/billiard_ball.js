@@ -18,11 +18,14 @@
             this.vX         = 0; // Math.round(-20 + Math.random() * 40);
             this.vY         = 0; // Math.round(-20 + Math.random() * 40);
 
-            if (id === 'images/ball0.jpg') {
+            // needed for animating the ball when it drops into a pocket
+            this.pocketDropState = null;
+
+            /*if (id === 'images/ball0.jpg') {
                 this.mass = 5;
                 this.vX = 24;
                 this.vY = 0;
-            }
+            }*/
 
 
             this.vAngular   = 0;
@@ -58,7 +61,7 @@
             var vAngle = this.getVelocityAngle();
 
             // check condition for perfect ball rotation/rolling
-            if (this.isPerfectlyRotating()) {
+            if (this.isPerfectlyRotating() || this.pocketDropState) {
                 generalFrictionFactor = 0.011;
 
                 // apply perfect ball rotation/rolling
@@ -209,6 +212,45 @@
                 m.position.y = -halfHeight + r;
                 this.vY *= -1;
             }
+        },
+
+        isAboutToDropInto: function(pocket) {
+            var returnVal = false;
+
+            var ballPos,
+                pocketPos,
+                dx,
+                dy,
+                dist;
+
+            // check if there is a collision with the pocket
+
+            // TODO: use simple rectangular collision check and afterwards check by calculating the distance
+            ballPos     = this.mesh.position;
+            pocketPos   = pocket.mesh.position;
+            dx          = pocketPos.x - ballPos.x;
+            dy          = pocketPos.y - ballPos.y;
+            dist        = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < pocket.radius) {
+                /*
+                this.containingPocket = pocket;
+                this.vX *= 0.1;
+                this.vY *= 0.1;
+                */
+
+                console.log('Ball "' + this.id + '" is about to drop into pocket "' + pocket.id + '".');
+
+                this.pocketDropState = new Billiard.Pocket.DropState.Phase1(this, pocket);
+
+                returnVal = true;
+            }
+
+            return returnVal;
+        },
+
+        dispatchPocketDrop: function() {
+            this.pocketDropState.proceed();
         },
 
         applyBallCollisionReaction: function(anotherBall) {

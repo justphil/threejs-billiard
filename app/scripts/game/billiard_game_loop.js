@@ -18,6 +18,9 @@
                 }
             }
 
+            // contains all the balls that has been dropped or are about to be dropped
+            this.droppingBalls = [];
+
             // create an array out of the pockets hash due to fixed order and easier iteration in mainGameLoop
             this.pocketsArray = [];
             for (var pocketId in this.pockets) {
@@ -32,8 +35,9 @@
         /* #### #### #### */
 
         mainGameLoop: function() {
-            var i, n, t, collisions, frictions, ball, cueId,
-                ba = this.ballsArray,
+            var i, j, n, m, t, collisions, frictions, ball, cueId,
+                ba  = this.ballsArray,
+                dba = this.droppingBalls,
                 remainingFrameTime = 1;
 
             while (remainingFrameTime > 0) {
@@ -66,19 +70,30 @@
                 }
             }
 
-            // apply general loop for friction and z-rotation
-            for (i = 0, n = ba.length; i < n; i++) {
+            // apply general loop for dispatching the phases of a pocket drop
+            i = dba.length;
+            while (i--) {
+                dba[i].dispatchPocketDrop();
+            }
+
+            // apply general loop for friction, z-rotation and pocket drop detection
+            i = ba.length;
+            while (i--) {
                 ball = ba[i];
                 ball.applyAbsoluteFriction(frictions[i], ball.getVelocity(), ball.getVelocityAngle(), 0.05);
                 ball.rotateZ();
 
-                // TODO: Remove experimental cowboy code
-                if (ball.id === 'images/ball0.jpg') {
-                    ball.mesh.scale.x -= 0.001;
-                    ball.mesh.scale.y -= 0.001;
-                    ball.mesh.scale.z -= 0.001;
+                // handle pocket drop
+                for (j = 0, m = this.pocketsArray.length; j < m; j++) {
+                    if (ball.isAboutToDropInto(this.pocketsArray[j])) {
+                        this.droppingBalls.push(ball);
+                        ba.splice(i, 1);
+                        break;
+                    }
                 }
             }
+
+
 
             // render cues
             for (cueId in this.cues) {
@@ -102,7 +117,6 @@
                 ball.translateByFraction(fraction);
 
                 frictions[i] = ball.rotateByFraction(fraction);
-
 
                 ball.handleCushionCollision(this.table);
             }
