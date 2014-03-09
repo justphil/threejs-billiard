@@ -64,6 +64,7 @@
             for (var pocketId in pocketData) {
                 if (pocketData.hasOwnProperty(pocketId)) {
                     pockets[pocketId] = new Billiard.Pocket(
+                        pocketId,
                         pocketData[pocketId].x,
                         pocketData[pocketId].y,
                         pocketData[pocketId].radius

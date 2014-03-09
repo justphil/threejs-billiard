@@ -2,8 +2,9 @@
     "use strict";
 
     Hooray.defineClass('Billiard', '', 'Pocket', {
-        init: function(x, y, radius) {
+        init: function(id, x, y, radius) {
             Hooray.log('A new Billiard.Pocket instance has been created!');
+            this.id = id;
             this.x = x;
             this.y = y;
             this.radius = radius;
