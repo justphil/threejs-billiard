@@ -51,7 +51,11 @@
 
                 this.mesh.rotation.z = angle + (Math.PI / 2);
 
-                this.targetGuide.update(mousePos);
+                this.targetGuide.update(
+                    ball0Pos,
+                    ball0Pos.x + (Math.cos(angle) * this.controlRadius),
+                    ball0Pos.y + (Math.sin(angle) * this.controlRadius)
+                );
             }
             else {
                 this.mouse = Hooray.Input.Mouse.capture(this.gameContainer.domElement);

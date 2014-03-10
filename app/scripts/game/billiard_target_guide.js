@@ -19,9 +19,17 @@
             this[prop] = val;
         },
 
-        update: function(mousePos) {
-            this.mesh.position.x = mousePos.x;
-            this.mesh.position.y = mousePos.y;
+        update: function(ball0Pos, endX, endY) {
+            //this.mesh.position.x = ball0Pos.x;
+            //this.mesh.position.y = ball0Pos.y;
+
+            this.mesh.geometry.vertices[0].x = ball0Pos.x;
+            this.mesh.geometry.vertices[0].y = ball0Pos.y;
+            this.mesh.geometry.vertices[1].x = endX;
+            this.mesh.geometry.vertices[1].y = endY;
+            this.mesh.geometry.verticesNeedUpdate = true;
+
+            //console.log('huhu', this.mesh.geometry.vertices);
         }
     });
 
