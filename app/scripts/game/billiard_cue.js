@@ -8,6 +8,8 @@
 
             this.controlRadius = 270;
 
+            this.targetGuide = new Billiard.TargetGuide(this.controlRadius);
+
             /**
              * !!!
              * A Billiard.Cue object will be augmented with the following properties during initialization:
@@ -48,6 +50,8 @@
                 cuePos.y = ball0Pos.y + (Math.sin(angle + Math.PI) * this.controlRadius);
 
                 this.mesh.rotation.z = angle + (Math.PI / 2);
+
+                this.targetGuide.update(mousePos);
             }
             else {
                 this.mouse = Hooray.Input.Mouse.capture(this.gameContainer.domElement);

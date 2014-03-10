@@ -27,7 +27,7 @@
         // TODO: refactor this function
         initGameRenderEngine: function(table, balls, cues, pockets) {
             var that = this;
-            var ballId, cueId, pocketId, geometry, material, sphere, plane, pocket;
+            var ballId, cueId, pocketId, geometry, material, sphere, plane, pocket, line;
             var rh = Billiard.Helper.RotationHelper;
 
             var promises = [];
@@ -36,7 +36,7 @@
             geometry = new THREE.PlaneGeometry(table.getPlayingFieldWidth(), table.getPlayingFieldHeight());
             material = new THREE.MeshBasicMaterial({color: 0x008000});
             plane = new THREE.Mesh(geometry, material);
-            plane.position.z = -1;
+            plane.position.z = -20;
             that.scene.add(plane);
 
             // load ball textures
@@ -93,6 +93,24 @@
 
                     // augment the cue with the gameContainer DOM element
                     cues[cueId].augment('gameContainer', that.gameContainer);
+
+                    if (!Hooray.isUndefined(cues[cueId].targetGuide)) {
+                        material = new THREE.LineDashedMaterial({
+                            color: 0xffffff,
+                            linewidth: 2,
+                            dashSize: 8,
+                            gapSize: 6
+                        });
+                        geometry = new THREE.Geometry();
+                        geometry.vertices.push( new THREE.Vector3( 0, 0, 0 ) );
+                        geometry.vertices.push( new THREE.Vector3( 0, 150, 0 ) );
+                        geometry.computeLineDistances();
+
+                        line = new THREE.Line(geometry, material);
+                        that.scene.add(line);
+
+                        cues[cueId].targetGuide.augment('mesh', line);
+                    }
                 }
             }
 
