@@ -22,14 +22,16 @@
         }
     });
 
+    /**
+     * When a ball drops into a pocket the animation has to traverse several phases.
+     * Phase1:
+     * Simulate a spring-like rolling out of the ball in the pocket.
+     */
     Hooray.defineClass('Billiard', 'Pocket.DropState', 'Phase1', {
         init: function(ball, pocket) {
             Hooray.log('A new Billiard.Pocket.DropState.Phase1 instance has been created!');
             this.ball = ball;
             this.pocket = pocket;
-
-            //this.ball.vX *= 0.5;
-            //this.ball.vY *= 0.5;
 
             this.aX = 0;
             this.aY = 0;
