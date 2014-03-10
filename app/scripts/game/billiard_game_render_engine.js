@@ -34,7 +34,7 @@
 
             // TODO: load table texture
             geometry = new THREE.PlaneGeometry(table.getPlayingFieldWidth(), table.getPlayingFieldHeight());
-            material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+            material = new THREE.MeshBasicMaterial({color: 0x008000});
             plane = new THREE.Mesh(geometry, material);
             plane.position.z = -1;
             that.scene.add(plane);
