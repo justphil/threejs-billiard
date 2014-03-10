@@ -19,7 +19,7 @@
         prepare: function() {
             var that = this;
             return this.gameRenderEngine.initGameRenderEngine(
-                this.balls, this.cues, this.pockets
+                this.table, this.balls, this.cues, this.pockets
             ).then(function(renderFn) {
                 that.renderFn = renderFn;
             });

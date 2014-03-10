@@ -24,12 +24,20 @@
             this.light = this.initLight(this.scene);
         },
 
-        initGameRenderEngine: function(balls, cues, pockets) {
+        // TODO: refactor this function
+        initGameRenderEngine: function(table, balls, cues, pockets) {
             var that = this;
             var ballId, cueId, pocketId, geometry, material, sphere, plane, pocket;
             var rh = Billiard.Helper.RotationHelper;
 
             var promises = [];
+
+            // TODO: load table texture
+            geometry = new THREE.PlaneGeometry(table.getPlayingFieldWidth(), table.getPlayingFieldHeight());
+            material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+            plane = new THREE.Mesh(geometry, material);
+            plane.position.z = -1;
+            that.scene.add(plane);
 
             // load ball textures
             var ballTexturesPromise = this.assetLoader.getMaps(Object.keys(balls)).then(function(mapHash) {
@@ -72,7 +80,7 @@
             for (cueId in cues) {
                 if (cues.hasOwnProperty(cueId)) {
                     geometry = new THREE.PlaneGeometry( 6, 480 );
-                    material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+                    material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
                     plane = new THREE.Mesh( geometry, material );
 
                     plane.position.z = 20;
@@ -91,7 +99,7 @@
             // TODO: load pocket textures in the future
             for (pocketId in pockets) {
                 if (pockets.hasOwnProperty(pocketId)) {
-                    material = new THREE.MeshBasicMaterial({color: 0xffff00});
+                    material = new THREE.MeshBasicMaterial({color: 0xff4306});
                     geometry = new THREE.CircleGeometry(pockets[pocketId].radius, 32);
                     pocket = new THREE.Mesh(geometry, material);
                     pocket.position.x = pockets[pocketId].x;
