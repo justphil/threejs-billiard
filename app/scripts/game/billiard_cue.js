@@ -49,12 +49,13 @@
                 cuePos.x = ball0Pos.x + (Math.cos(angle + Math.PI) * this.controlRadius);
                 cuePos.y = ball0Pos.y + (Math.sin(angle + Math.PI) * this.controlRadius);
 
-                this.mesh.rotation.z = angle + (Math.PI / 2);
+                this.mesh.rotation.z = angle;
 
                 this.targetGuide.update(
                     ball0Pos,
                     ball0Pos.x + (Math.cos(angle) * this.controlRadius),
-                    ball0Pos.y + (Math.sin(angle) * this.controlRadius)
+                    ball0Pos.y + (Math.sin(angle) * this.controlRadius),
+                    this.mesh.rotation.z
                 );
             }
             else {

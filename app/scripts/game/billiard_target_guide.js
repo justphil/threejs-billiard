@@ -11,6 +11,7 @@
              * !!!
              * A Billiard.TargetGuide object will be augmented with the following properties during initialization:
              * * * mesh
+             * * * meshCircle
              * !!!
              */
         },
@@ -19,17 +20,17 @@
             this[prop] = val;
         },
 
-        update: function(ball0Pos, endX, endY) {
-            //this.mesh.position.x = ball0Pos.x;
-            //this.mesh.position.y = ball0Pos.y;
-
+        update: function(ball0Pos, endX, endY, rotation) {
             this.mesh.geometry.vertices[0].x = ball0Pos.x;
             this.mesh.geometry.vertices[0].y = ball0Pos.y;
             this.mesh.geometry.vertices[1].x = endX;
             this.mesh.geometry.vertices[1].y = endY;
             this.mesh.geometry.verticesNeedUpdate = true;
 
-            //console.log('huhu', this.mesh.geometry.vertices);
+            this.meshCircle.position.x = endX;
+            this.meshCircle.position.y = endY;
+
+            console.log('rotation', rotation);
         }
     });
 

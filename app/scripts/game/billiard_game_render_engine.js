@@ -27,7 +27,7 @@
         // TODO: refactor this function
         initGameRenderEngine: function(table, balls, cues, pockets) {
             var that = this;
-            var ballId, cueId, pocketId, geometry, material, sphere, plane, pocket, line;
+            var ballId, cueId, pocketId, geometry, material, sphere, plane, pocket, line, circle;
             var rh = Billiard.Helper.RotationHelper;
 
             var promises = [];
@@ -79,12 +79,10 @@
             // TODO: load cue textures in the future
             for (cueId in cues) {
                 if (cues.hasOwnProperty(cueId)) {
-                    geometry = new THREE.PlaneGeometry( 6, 480 );
+                    geometry = new THREE.PlaneGeometry( 480, 6 );
                     material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
                     plane = new THREE.Mesh( geometry, material );
-
                     plane.position.z = 20;
-                    //plane.rotation.z = Math.PI / 4;
 
                     that.scene.add( plane );
 
@@ -104,12 +102,22 @@
                         geometry = new THREE.Geometry();
                         geometry.vertices.push( new THREE.Vector3( 0, 0, 0 ) );
                         geometry.vertices.push( new THREE.Vector3( 0, 150, 0 ) );
+                        // this is important to get a dashed line
                         geometry.computeLineDistances();
 
                         line = new THREE.Line(geometry, material);
                         that.scene.add(line);
 
                         cues[cueId].targetGuide.augment('mesh', line);
+
+                        material = new THREE.LineBasicMaterial( { color: 0xffffff } );
+                        geometry = new THREE.CircleGeometry( 20, 48 );
+                        // Remove center vertex
+                        geometry.vertices.shift();
+                        circle = new THREE.Line( geometry, material );
+                        that.scene.add(circle);
+
+                        cues[cueId].targetGuide.augment('meshCircle', circle);
                     }
                 }
             }
