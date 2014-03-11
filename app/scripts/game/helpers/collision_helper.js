@@ -54,10 +54,10 @@
         // calculate solution according to pq-formula
         var bSquared = b * b;
         var fourAC = 4 * a * c;
-        var anotherHelper = bSquared - fourAC;
+        var diff = bSquared - fourAC;
 
-        if (anotherHelper >= 0) {
-            helper = Math.sqrt( anotherHelper );
+        if (diff >= 0) {
+            helper = Math.sqrt(diff);
             t1 = (-b + helper) / (2 * a);
             t2 = (-b - helper) / (2 * a);
             return Math.min(t1, t2);

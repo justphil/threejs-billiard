@@ -32,17 +32,8 @@
             this.vAngularZ  = 0;
 
             this.rotationHelper = Billiard.Helper.RotationHelper;
+            this.collisionHelper = Billiard.Helper.CollisionHelper;
             this.coordsRotationHelper = Billiard.Helper.CoordsRotationHelper;
-
-            /* create some helper vectors that will be used for collision detection */
-            this.helperVectors = {
-                p0: new THREE.Vector2(0, 0),
-                pf: new THREE.Vector2(0, 0),
-                q0: new THREE.Vector2(0, 0),
-                qf: new THREE.Vector2(0, 0),
-                tmp1: new THREE.Vector2(0, 0),
-                tmp2: new THREE.Vector2(0, 0)
-            };
 
             this.pubSub = pubSub;
 
@@ -337,54 +328,13 @@
         },
 
         predictCollisionWith: function(anotherBall) {
-            // this = p, anotherBall = q
+            var thisBallPos     = this.mesh.position,
+                anotherBallPos  = anotherBall.mesh.position;
 
-            var a, b, c, t1, t2;
-            var tmp1 = this.helperVectors.tmp1,
-                tmp2 = this.helperVectors.tmp2,
-                tmp1Length, tmp2Length, rSum, helper;
-
-            // this ball
-            var p0 = this.helperVectors.p0;
-            p0.set(this.mesh.position.x, this.mesh.position.y);
-
-            var pf = this.helperVectors.pf;
-            pf.set(this.mesh.position.x + this.vX, this.mesh.position.y + this.vY);
-
-            var dp = pf.sub(p0);
-
-            // another ball
-            var q0 = this.helperVectors.q0;
-            q0.set(anotherBall.mesh.position.x, anotherBall.mesh.position.y);
-
-            var qf = this.helperVectors.qf;
-            qf.set(anotherBall.mesh.position.x + anotherBall.vX, anotherBall.mesh.position.y + anotherBall.vY);
-
-            var dq = qf.sub(q0);
-
-
-            // calculate a for the pq-formula
-            tmp1.subVectors(dq, dp);
-            tmp1Length = tmp1.length();
-            a = tmp1Length * tmp1Length;
-
-            // calculate b for the pq-formula
-            tmp2.subVectors(q0, p0);
-            tmp2.multiplyScalar(2);
-            b = tmp2.dot(tmp1);
-
-            // calculate c for the pq-formula
-            tmp2.subVectors(q0, p0);
-            tmp2Length = tmp2.length();
-            rSum = this.radius + anotherBall.radius;
-            c = (tmp2Length * tmp2Length) - ( rSum * rSum );
-
-            // calculate solution according to pq-formula
-            helper = Math.sqrt( ( b * b ) - ( 4 * a * c ) );
-            t1 = (-b + helper) / (2 * a);
-            t2 = (-b - helper) / (2 * a);
-
-            return Math.min(t1, t2);
+            return this.collisionHelper.getCollisionTime(
+                thisBallPos.x, thisBallPos.y, this.vX, this.vY, this.radius,
+                anotherBallPos.x, anotherBallPos.y, anotherBall.vX, anotherBall.vY, anotherBall.radius
+            );
         }
     });
 

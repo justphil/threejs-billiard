@@ -144,7 +144,7 @@
                     for (j = i + 1; j < n; j++) {
                         ballB = ba[j];
                         t = ballA.predictCollisionWith(ballB);
-                        if (t >= 0 && t <= 1) {
+                        if (t !== null && t >= 0 && t <= 1) {
                             //console.log('A collision will happen at t = ' + t + ' ('+ballA.id+' -> '+ballB.id+')');
                             frameCollisions.push({
                                 t: t,
