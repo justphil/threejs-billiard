@@ -71,6 +71,13 @@
                                 }
                             }
                         }
+                        else {
+                            for (cueId in cues) {
+                                if (cues.hasOwnProperty(cueId)) {
+                                    cues[cueId].otherBalls.push(balls[ballId]);
+                                }
+                            }
+                        }
                     }
                 }
             });
@@ -115,6 +122,8 @@
                         // Remove center vertex
                         geometry.vertices.shift();
                         circle = new THREE.Line( geometry, material );
+                        circle.position.z = 20;
+
                         that.scene.add(circle);
 
                         cues[cueId].targetGuide.augment('meshCircle', circle);

@@ -20,7 +20,7 @@
             this[prop] = val;
         },
 
-        update: function(ball0Pos, endX, endY, rotation) {
+        update: function(ball0Pos, endX, endY) {
             this.mesh.geometry.vertices[0].x = ball0Pos.x;
             this.mesh.geometry.vertices[0].y = ball0Pos.y;
             this.mesh.geometry.vertices[1].x = endX;
@@ -29,8 +29,6 @@
 
             this.meshCircle.position.x = endX;
             this.meshCircle.position.y = endY;
-
-            console.log('rotation', rotation);
         }
     });
 
