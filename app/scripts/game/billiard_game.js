@@ -7,7 +7,7 @@
             this.pubSub = new Hooray.PubSub();
             this.eventProcessor = new Billiard.Event.EventProcessor(this.pubSub);
             this.balls = this.initBalls(rules, this.pubSub); // hash: ballId -> Billiard.Ball object
-            this.cues = this.initCues(111, 222);
+            this.cues = this.initCues(111, 222, table);
             this.gameRenderEngine = new Billiard.GameRenderEngine(gameContainerId);
             this.table = table;
             this.pockets = this.initPockets(table);
@@ -48,11 +48,11 @@
             return balls;
         },
 
-        initCues: function(player1Id, player2Id) {
+        initCues: function(player1Id, player2Id, table) {
             var cues = {};
 
-            cues[player1Id] = new Billiard.Cue(player1Id);
-            //cues[player2Id] = new Billiard.Cue(player2Id);
+            cues[player1Id] = new Billiard.Cue(player1Id, table);
+            //cues[player2Id] = new Billiard.Cue(player2Id, table);
 
             return cues;
         },

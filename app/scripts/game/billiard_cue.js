@@ -2,8 +2,9 @@
     "use strict";
 
     Hooray.defineClass('Billiard', '', 'Cue', {
-        init: function(playerId) {
+        init: function(playerId, table) {
             this.id = 'cue_' + playerId;
+            this.table = table;
             Hooray.log('A new Billiard.Cue instance has been created with id "'+this.id+'"!');
 
             this.controlRadius = 270;
@@ -61,9 +62,9 @@
 
                 this.mesh.rotation.z = angle;
 
-                // angle, ball0, otherBalls, distanceTopLeftToBottomRight, controlRadius
+                // angle, ball0, otherBalls, distanceTopLeftToBottomRight, table
                 this.targetGuide.update(
-                    angle, this.ball0, this.otherBalls, this.distanceTopLeftToBottomRight, this.controlRadius
+                    angle, this.ball0, this.otherBalls, this.distanceTopLeftToBottomRight, this.table
                 );
             }
             else {
