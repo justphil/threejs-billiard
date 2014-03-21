@@ -43,6 +43,7 @@
             var timeToConsider = 1;
             var indexOfRelevantBall = -1;
 
+            // determine if the TGC is colliding with a ball (indexOfRelevantBall becomes !== -1 if so)
             for (i = 0, n = otherBalls.length; i < n; i++) {
                 // TODO: Potted balls doesn't need to be considered.
                 b = otherBalls[i];
@@ -63,10 +64,12 @@
             }
 
             if (indexOfRelevantBall !== -1) {
+                // TGC is colliding with a ball
                 endX = ball0Pos.x + timeToConsider * fakeVx;
                 endY = ball0Pos.y + timeToConsider * fakeVy;
             }
             else {
+                // TGC needs to be drawn in front of a cushion
                 var circlePoint = this.calculateTgcPositionInFrontOfCushion(angle, sinAngle, cosAngle, ball0, table);
                 endX = circlePoint.x;
                 endY = circlePoint.y;
