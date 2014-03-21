@@ -100,6 +100,7 @@
                     cues[cueId].augment('gameContainer', that.gameContainer);
 
                     if (!Hooray.isUndefined(cues[cueId].targetGuide)) {
+                        // add general target guide line
                         material = new THREE.LineDashedMaterial({
                             color: 0xffffff,
                             linewidth: 2,
@@ -109,6 +110,7 @@
                         geometry = new THREE.Geometry();
                         geometry.vertices.push( new THREE.Vector3( 0, 0, 0 ) );
                         geometry.vertices.push( new THREE.Vector3( 0, 150, 0 ) );
+                        geometry.vertices.push( new THREE.Vector3( 150, 150, 0 ) );
                         // this is important to get a dashed line
                         geometry.computeLineDistances();
 
@@ -117,6 +119,17 @@
 
                         cues[cueId].targetGuide.augment('mesh', line);
 
+                        // add target guide line for visualizing collision reaction of another ball
+                        material = new THREE.LineBasicMaterial( { color: 0xffffff } );
+                        geometry = new THREE.Geometry();
+                        geometry.vertices.push( new THREE.Vector3( 0, 0, 0 ) );
+                        geometry.vertices.push( new THREE.Vector3( 0, 150, 0 ) );
+                        line = new THREE.Line(geometry, material);
+                        line.position.z = 20;
+                        that.scene.add(line);
+                        cues[cueId].targetGuide.augment('meshAnotherBallReactionLine', line);
+
+                        // add target guide circle
                         material = new THREE.LineBasicMaterial( { color: 0xffffff } );
                         geometry = new THREE.CircleGeometry( 20, 48 );
                         // Remove center vertex
