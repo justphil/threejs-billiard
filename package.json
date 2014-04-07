@@ -1,0 +1,33 @@
+{
+    "name": "threejs-billiard",
+    "version": "0.0.1",
+    "description": "A billiard game based on three.js",
+    "main": "./app/index.html",
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "test": "karma start"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/justphil/threejs-billiard.git"
+    },
+    "keywords": [
+        "billiard",
+        "threejs",
+        "physics",
+        "game",
+        "simulation"
+    ],
+    "author": {
+        "name": "Philipp Tarasiewicz",
+        "email": "philipp.tarasiewicz@angularjs.de",
+        "url": "http://angularjs.de/"
+    },
+    "license": "Apache License v2.0",
+    "bugs": {
+        "url": "https://github.com/justphil/threejs-billiard/issues"
+    },
+    "homepage": "https://github.com/justphil/threejs-billiard"
+}
