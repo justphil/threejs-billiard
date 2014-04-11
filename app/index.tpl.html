@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>three.js billiard by Philipp Tarasiewicz (AngularJS.DE)</title>
+    <link href="styles/main.css" media="all" rel="stylesheet">
+</head>
+<body>
+
+<div id="gameContainer"></div>
+
+<!-- 3rd-Party Libs -->
+<script src="lib/threejs/three.min.js"></script>
+<script src="lib/threejs/Detector.js"></script>
+<script src="lib/q/q.js"></script>
+
+<!-- Hooray - a simple helper framework -->
+<script src="scripts/basics/foundation.js"></script>
+<script src="scripts/basics/log.js"></script>
+<script src="scripts/basics/pub_sub.js"></script>
+<script src="scripts/basics/input.js"></script>
+
+<!-- Billiard Game -->
+<script src="scripts/infrastructure/asset_loader.js"></script>
+<script src="scripts/game/helpers/rotation_helper.js"></script>
+<script src="scripts/game/helpers/coords_rotation_helper.js"></script>
+<script src="scripts/game/helpers/collision_helper.js"></script>
+<script src="scripts/game/events/events.js"></script>
+<script src="scripts/game/events/event_processor.js"></script>
+<script src="scripts/game/rules/eight_ball/eight_ball.js"></script>
+<script src="scripts/game/tables/default.js"></script>
+<script src="scripts/game/billiard_game.js"></script>
+<script src="scripts/game/billiard_game_render_engine.js"></script>
+<script src="scripts/game/billiard_game_loop.js"></script>
+<script src="scripts/game/billiard_ball.js"></script>
+<script src="scripts/game/billiard_cue.js"></script>
+<script src="scripts/game/billiard_target_guide.js"></script>
+<script src="scripts/game/billiard_pocket.js"></script>
+<script src="scripts/app.js"></script>
+
+</body>
+</html>
