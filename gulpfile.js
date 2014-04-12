@@ -7,7 +7,7 @@ var gulp = require('gulp'),
   rename = require('gulp-rename'),
   uglify = require('gulp-uglify'),
   es = require('event-stream'),
-  component = require('package.json');
+  component = require('./package.json');
 
 var paths = {
   dist: 'dist',
@@ -42,7 +42,7 @@ gulp.task('clean', function () {
  *
  *
  */
-gulp.task('default', ['clean', 'dist', 'examples']);
+gulp.task('default', ['clean', 'dist', 'example']);
 
 /**
  *
@@ -122,7 +122,7 @@ function preMinifiedDependenciesStream() {
 }
 
 function dependenciesToMinifyStream() {
-  return gulp.src([paths.lib + '/**/*.js', '!'paths.lib + '/**/*.min.js'])
+  return gulp.src([paths.lib + '/**/*.js', '!' + paths.lib + '/**/*.min.js'])
     .pipe(concat('deps-to-minify.min.js'));
 }
 
