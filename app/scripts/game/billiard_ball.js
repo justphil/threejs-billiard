@@ -33,7 +33,6 @@
 
             this.rotationHelper = Billiard.Helper.RotationHelper;
             this.collisionHelper = Billiard.Helper.CollisionHelper;
-            this.coordsRotationHelper = Billiard.Helper.CoordsRotationHelper;
 
             this.pubSub = pubSub;
 
@@ -248,83 +247,23 @@
             var ball0 = this.mesh.position,
                 ball1 = anotherBall.mesh.position;
 
-            var dx = ball1.x - ball0.x,
-                dy = ball1.y - ball0.y;
+            // x1, y1, vX1, vY1, r1, m1,
+            // x2, y2, vX2, vY2, r2, m2,
+            // coefficientOfRestitution
+            var collisionReactionalChanges = this.collisionHelper.calculateBallCollisionReaction(
+                ball0.x, ball0.y, this.vX, this.vY, this.radius, this.mass,
+                ball1.x, ball1.y, anotherBall.vX, anotherBall.vY, anotherBall.radius, anotherBall.mass,
+                1
+            );
 
-            var crh = this.coordsRotationHelper;
+            // apply changes
+            this.vAngularZ = collisionReactionalChanges.vAngularZ1;
+            anotherBall.vAngularZ = collisionReactionalChanges.vAngularZ2;
 
-            // calculate angle, sine, and cosine
-            var angle = Math.atan2(dy, dx),
-                sin = Math.sin(angle),
-                cos = Math.cos(angle),
-                e = 1,
-            // rotate ball0's position
-                //pos0 = {x: 0, y: 0}, //point
-            // rotate ball1's position
-                //pos1 = crh.rotateCoords(dx, dy, sin, cos, true),
-            // rotate ball0's velocity
-                vel0 = crh.rotateCoords(this.vX, this.vY, sin, cos, true),
-            // rotate ball1's velocity
-                vel1 = crh.rotateCoords(anotherBall.vX, anotherBall.vY, sin, cos, true);
-
-            // apply conservation of momentum
-            var tmp = 1 / (this.mass + anotherBall.mass);
-            var newVxBall0 = (this.mass - e * anotherBall.mass) * vel0.x * tmp
-                + (1 + e) * anotherBall.mass * vel1.x * tmp;
-
-            var newVxBall1 = (1 + e) * this.mass * vel0.x * tmp
-                + (anotherBall.mass - e * this.mass) * vel1.x * tmp;
-
-            // apply friction due to oblique collision if it is an oblique collision
-            var obliquenessDetectionVx, obliquenessDetectionVy;
-            if (vel0.x === 0 && vel0.y === 0) {
-                obliquenessDetectionVx = vel1.x;
-                obliquenessDetectionVy = vel1.y;
-            }
-            else {
-                obliquenessDetectionVx = vel0.x;
-                obliquenessDetectionVy = vel0.y;
-            }
-
-            if (this.isObliqueBallCollision(obliquenessDetectionVx, obliquenessDetectionVy, dx, dy)) {
-                //console.log('Oblique!');
-                var fiveSeventh = 5 / 7;
-
-                this.vAngularZ = -fiveSeventh * (vel0.y / this.radius);
-                anotherBall.vAngularZ = fiveSeventh * (vel1.y / anotherBall.radius);
-
-                vel0.y = fiveSeventh * vel0.y;
-                vel1.y = fiveSeventh * vel1.y;
-            }
-
-            // rotate velocities back
-            var vel0F = crh.rotateCoords(newVxBall0, vel0.y, sin, cos, false),
-                vel1F = crh.rotateCoords(newVxBall1, vel1.y, sin, cos, false);
-
-            this.vX = vel0F.x;
-            this.vY = vel0F.y;
-            anotherBall.vX = vel1F.x;
-            anotherBall.vY = vel1F.y;
-        },
-
-        isObliqueBallCollision: function(vX0, vY0, vX1, vY1) {
-            // calculate dot product of v0 and v1
-            var dotProduct = vX0 * vX1 + vY0 * vY1;
-
-            // calculate the amount of v0 and v1
-            var amountV0 = Math.sqrt(vX0*vX0 + vY0*vY0);
-            var amountV1 = Math.sqrt(vX1*vX1 + vY1*vY1);
-
-            // calculate cos of the angle between v0 and v1
-            var cosAngle = dotProduct / (amountV0 * amountV1);
-
-            // calculate the angle
-            var angle = Math.acos(cosAngle);
-
-            //console.log('COS ANGLE', angle * 180 / Math.PI, cosAngle);
-
-            // the collision is oblique if the angle is not a multiple of PI/2
-            return (angle % (Math.PI/2)) !== 0;
+            this.vX = collisionReactionalChanges.vX1;
+            this.vY = collisionReactionalChanges.vY1;
+            anotherBall.vX = collisionReactionalChanges.vX2;
+            anotherBall.vY = collisionReactionalChanges.vY2;
         },
 
         predictCollisionWith: function(anotherBall) {

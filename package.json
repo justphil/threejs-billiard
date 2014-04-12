@@ -1,0 +1,45 @@
+{
+  "name": "threejs-billiard",
+  "version": "0.0.1",
+  "description": "A billiard ball physics simulator based on three.js",
+  "main": "./app/index.html",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/justphil/threejs-billiard.git"
+  },
+  "keywords": [
+    "billiard",
+    "threejs",
+    "physics",
+    "game",
+    "simulation"
+  ],
+  "author": {
+    "name": "Philipp Tarasiewicz",
+    "email": "philipp.tarasiewicz@angularjs.de",
+    "url": "http://angularjs.de/"
+  },
+  "license": "Apache License v2.0",
+  "bugs": {
+    "url": "https://github.com/justphil/threejs-billiard/issues"
+  },
+  "homepage": "https://github.com/justphil/threejs-billiard",
+  "devDependencies": {
+    "karma": "^0.12.4",
+    "karma-jasmine": "^0.1.5",
+    "karma-chrome-launcher": "^0.1.3",
+    "gulp": "^3.6.0",
+    "gulp-clean": "^0.2.4",
+    "gulp-concat": "^2.2.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^0.2.1",
+    "event-stream": "^3.1.1",
+    "gulp-inject": "^0.4.1"
+  }
+}

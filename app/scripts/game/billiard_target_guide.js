@@ -11,6 +11,7 @@
              * A Billiard.TargetGuide object will be augmented with the following properties during initialization:
              * * * mesh
              * * * meshCircle
+             * * * meshAnotherBallReactionLine
              * !!!
              */
         },
@@ -20,7 +21,6 @@
         },
 
         update: function(angle, ball0, otherBalls, distanceTopLeftToBottomRight, table) {
-            //console.log('angle', angle);
             /**
              * Basic idea:
              * Among the other parameters the Cue object passes us the distance from the top-left corner to
@@ -34,7 +34,13 @@
              */
 
             // TODO: We can save some cpu cycles and only do all the calculations when all balls aren't moving anymore.
-            var i, n, t, b, endX, endY;
+            var i, n, t, b,
+                endX, endY,
+                ball0ReactionLineEndX, ball0ReactionLineEndY,
+                collisionReactionalChanges,
+                anotherBall, anotherBallPos,
+                anotherBallReactionLineStartX, anotherBallReactionLineStartY,
+                anotherBallReactionLineEndX, anotherBallReactionLineEndY;
             var sinAngle = Math.sin(angle);
             var cosAngle = Math.cos(angle);
             var fakeVx = distanceTopLeftToBottomRight * cosAngle;
@@ -43,6 +49,7 @@
             var timeToConsider = 1;
             var indexOfRelevantBall = -1;
 
+            // determine if the TGC is colliding with a ball (indexOfRelevantBall becomes !== -1 if so)
             for (i = 0, n = otherBalls.length; i < n; i++) {
                 // TODO: Potted balls doesn't need to be considered.
                 b = otherBalls[i];
@@ -63,13 +70,42 @@
             }
 
             if (indexOfRelevantBall !== -1) {
+                // TGC is colliding with a ball
                 endX = ball0Pos.x + timeToConsider * fakeVx;
                 endY = ball0Pos.y + timeToConsider * fakeVy;
+
+                anotherBall = otherBalls[indexOfRelevantBall];
+                anotherBallPos = anotherBall.mesh.position;
+
+                // x1, y1, vX1, vY1, r1, m1,
+                // x2, y2, vX2, vY2, r2, m2,
+                // coefficientOfRestitution
+                collisionReactionalChanges = this.collisionHelper.calculateBallCollisionReaction(
+                    endX, endY, 80 * cosAngle, 80 * sinAngle, ball0.radius, ball0.mass,
+                    anotherBallPos.x, anotherBallPos.y, anotherBall.vX, anotherBall.vY, anotherBall.radius, anotherBall.mass,
+                    1
+                );
+
+                ball0ReactionLineEndX = endX + collisionReactionalChanges.vX1;
+                ball0ReactionLineEndY = endY + collisionReactionalChanges.vY1;
+
+                anotherBallReactionLineStartX = anotherBallPos.x;
+                anotherBallReactionLineStartY = anotherBallPos.y;
+                anotherBallReactionLineEndX = anotherBallReactionLineStartX + (collisionReactionalChanges.vX2 * 0.5);
+                anotherBallReactionLineEndY = anotherBallReactionLineStartY + (collisionReactionalChanges.vY2 * 0.5);
             }
             else {
+                // TGC needs to be drawn in front of a cushion
                 var circlePoint = this.calculateTgcPositionInFrontOfCushion(angle, sinAngle, cosAngle, ball0, table);
                 endX = circlePoint.x;
                 endY = circlePoint.y;
+                ball0ReactionLineEndX = endX;
+                ball0ReactionLineEndY = endY;
+
+                anotherBallReactionLineStartX = endX;
+                anotherBallReactionLineStartY = endY;
+                anotherBallReactionLineEndX = endX;
+                anotherBallReactionLineEndY = endY;
                 //endX = ball0Pos.x + (Math.cos(angle) * controlRadius);
                 //endY = ball0Pos.y + (Math.sin(angle) * controlRadius);
             }
@@ -79,7 +115,18 @@
             this.mesh.geometry.vertices[0].y = ball0Pos.y;
             this.mesh.geometry.vertices[1].x = endX;
             this.mesh.geometry.vertices[1].y = endY;
+            this.mesh.geometry.vertices[2].x = ball0ReactionLineEndX;
+            this.mesh.geometry.vertices[2].y = ball0ReactionLineEndY;
             this.mesh.geometry.verticesNeedUpdate = true;
+
+            // update vertices of meshAnotherBallReactionLine if current orientation will lead to a collision
+            var anotherBallReactionLineVertices = this.meshAnotherBallReactionLine.geometry.vertices;
+            anotherBallReactionLineVertices[0].x = anotherBallReactionLineStartX;
+            anotherBallReactionLineVertices[0].y = anotherBallReactionLineStartY;
+            anotherBallReactionLineVertices[1].x = anotherBallReactionLineEndX;
+            anotherBallReactionLineVertices[1].y = anotherBallReactionLineEndY;
+            this.meshAnotherBallReactionLine.geometry.verticesNeedUpdate = true;
+
 
             // update TGC
             this.meshCircle.position.x = endX;

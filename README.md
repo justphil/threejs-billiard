@@ -1,4 +1,4 @@
 threejs-billiard
 ================
 
-A billiard game based on three.js
+A billiard ball physics simulator based on three.js
