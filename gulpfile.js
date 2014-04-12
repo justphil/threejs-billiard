@@ -42,9 +42,7 @@ gulp.task('clean', function () {
  *
  *
  */
-gulp.task('default', ['clean'], function () {
-  gulp.start(paths.dist, paths.examples);
-});
+gulp.task('default', ['clean', 'dist', 'examples']);
 
 /**
  *
@@ -63,9 +61,7 @@ gulp.task('fat-dist', ['clean'], function () {
     .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('dist', ['clean'], function () {
-  gulp.start('lean-dist', 'fat-dist');
-});
+gulp.task('dist', ['clean', 'lean-dist', 'fat-dist']);
 
 /**
  *
@@ -74,9 +70,7 @@ gulp.task('dist', ['clean'], function () {
  *
  *
  */
-gulp.task('example', ['clean'], function () {
-  gulp.start('prepare-example', 'copy-images-to-example');
-});
+gulp.task('example', ['clean', 'prepare-example', 'copy-images-to-example']);
 
 /**
  *
@@ -89,7 +83,7 @@ gulp.task('example', ['clean'], function () {
 gulp.task('prepare-example', function () {
   var fatDist = fatDistributionStream()
     .pipe(gulp.dest(paths.examples + '/scripts'))
-    .pipe(rename('../../scripts/'+component.name+'.fat.min.js'));
+    .pipe(rename('../../scripts/' + component.name + '.fat.min.js'));
 
   var appJs = helperJsResourcesStream()
     .pipe(gulp.dest(paths.examples + '/scripts'))
@@ -143,7 +137,7 @@ function minifiedJsResourcesStream() {
   // To a certain extend we need to ensure a specific loading order.
   // We can do it better in the future by using e.g. Browserify.
   return gulp.src(paths.src)
-    .pipe(concat(component.name+'.min.js'))
+    .pipe(concat(component.name + '.min.js'))
     .pipe(uglify());
 }
 
@@ -160,7 +154,7 @@ function fatDistributionStream() {
   return es.merge(
     minifiedDependenciesStream(),
     minifiedJsResourcesStream()
-  ).pipe(concat(component.name+'.fat.min.js'));
+  ).pipe(concat(component.name + '.fat.min.js'));
 }
 
 /**
