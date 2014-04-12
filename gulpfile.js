@@ -56,23 +56,35 @@ gulp.task('dist', ['clean'], function() {
 /**
  *
  *
- * Task for runnable example
+ * Task for a runnable example (including index.html and app.js for bootstrapping)
  *
  *
  */
 gulp.task('example', ['clean'], function() {
+    gulp.start('prepare-example', 'copy-images-to-example');
+});
+
+/**
+ *
+ *
+ * Helper tasks
+ *
+ *
+ */
+
+gulp.task('prepare-example', function() {
     var fatDist = fatDistributionStream()
-        .pipe(gulp.dest('example'))
-        .pipe(rename('../threejs-billiard.fat.min.js'));
+        .pipe(gulp.dest('example/scripts'))
+        .pipe(rename('../../scripts/threejs-billiard.fat.min.js'));
 
     var appJs = helperJsResourcesStream()
-        .pipe(gulp.dest('example'))
-        .pipe(rename('../app.js'));
+        .pipe(gulp.dest('example/scripts'))
+        .pipe(rename('../../scripts/app.js'));
 
     var cssStream = gulp.src(['app/styles/**/*.css'])
         .pipe(concat('main.css'))
-        .pipe(gulp.dest('example'))
-        .pipe(rename('../main.css'));
+        .pipe(gulp.dest('example/styles'))
+        .pipe(rename('../../styles/main.css'));
 
     return gulp.src('app/index.tpl.html')
         .pipe(inject(es.merge(fatDist, appJs, cssStream), {
@@ -83,10 +95,15 @@ gulp.task('example', ['clean'], function() {
         .pipe(gulp.dest('example'));
 });
 
+gulp.task('copy-images-to-example', function() {
+    return gulp.src('app/images/**/*.jpg')
+        .pipe(gulp.dest('example/images'));
+});
+
 /**
  *
  *
- * Helper functions that return several streams
+ * Helper functions that return streams
  *
  *
  */
