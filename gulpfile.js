@@ -6,13 +6,21 @@ var gulp = require('gulp'),
   inject = require('gulp-inject'),
   rename = require('gulp-rename'),
   uglify = require('gulp-uglify'),
-  es = require('event-stream');
+  es = require('event-stream'),
+  component = require('package.json');
 
 var paths = {
   dist: 'dist',
   examples: 'example',
   libs: 'app/lib',
-  debug: 'debug'
+  debug: 'debug',
+  src: [
+    'app/scripts/basics/foundation.js',
+    'app/scripts/basics/**/*.js',
+    'app/scripts/game/helpers/coords_rotation_helper.js',
+    'app/scripts/**/*.js',
+    '!app/scripts/app.js'
+  ]
 };
 
 /**
@@ -81,7 +89,7 @@ gulp.task('example', ['clean'], function () {
 gulp.task('prepare-example', function () {
   var fatDist = fatDistributionStream()
     .pipe(gulp.dest(paths.examples + '/scripts'))
-    .pipe(rename('../../scripts/threejs-billiard.fat.min.js'));
+    .pipe(rename('../../scripts/'+component.name+'.fat.min.js'));
 
   var appJs = helperJsResourcesStream()
     .pipe(gulp.dest(paths.examples + '/scripts'))
@@ -135,7 +143,7 @@ function minifiedJsResourcesStream() {
   // To a certain extend we need to ensure a specific loading order.
   // We can do it better in the future by using e.g. Browserify.
   return gulp.src(paths.src)
-    .pipe(concat('threejs-billiard.min.js'))
+    .pipe(concat(component.name+'.min.js'))
     .pipe(uglify());
 }
 
@@ -152,7 +160,7 @@ function fatDistributionStream() {
   return es.merge(
     minifiedDependenciesStream(),
     minifiedJsResourcesStream()
-  ).pipe(concat('threejs-billiard.fat.min.js'));
+  ).pipe(concat(component.name+'.fat.min.js'));
 }
 
 /**
