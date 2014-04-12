@@ -1,7 +1,7 @@
 {
   "name": "threejs-billiard",
   "version": "0.0.1",
-  "description": "A billiard game based on three.js",
+  "description": "A billiard ball physics simulator based on three.js",
   "main": "./app/index.html",
   "directories": {
     "test": "test"
@@ -34,9 +34,6 @@
     "karma": "^0.12.4",
     "karma-jasmine": "^0.1.5",
     "karma-chrome-launcher": "^0.1.3",
-    "grunt": "^0.4.4",
-    "load-grunt-tasks": "^0.4.0",
-    "grunt-contrib-concat": "^0.4.0",
     "gulp": "^3.6.0",
     "gulp-clean": "^0.2.4",
     "gulp-concat": "^2.2.0",
