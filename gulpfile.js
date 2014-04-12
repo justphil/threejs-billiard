@@ -8,6 +8,12 @@ var gulp    = require('gulp'),
     uglify  = require('gulp-uglify'),
     es      = require('event-stream');
 
+var paths = {
+  dist: 'dist',
+  examples: 'example',
+  libs: 'app/lib',
+  debug: 'debug'
+};
 
 /**
  *
@@ -17,7 +23,7 @@ var gulp    = require('gulp'),
  *
  */
 gulp.task('clean', function() {
-    return gulp.src(['dist', 'example', 'debug'], {read: false})
+    return gulp.src([paths.dist, paths.examples, paths.debug], {read: false})
         .pipe(clean());
 });
 
@@ -29,7 +35,7 @@ gulp.task('clean', function() {
  *
  */
 gulp.task('default', ['clean'], function() {
-    gulp.start('dist', 'example');
+    gulp.start(paths.dist, paths.examples);
 });
 
 /**
@@ -41,12 +47,12 @@ gulp.task('default', ['clean'], function() {
  */
 gulp.task('lean-dist', ['clean'], function() {
     return leanDistributionStream()
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest(paths.dist));
 });
 
 gulp.task('fat-dist', ['clean'], function() {
     return fatDistributionStream()
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest(paths.dist));
 });
 
 gulp.task('dist', ['clean'], function() {
@@ -74,16 +80,16 @@ gulp.task('example', ['clean'], function() {
 
 gulp.task('prepare-example', function() {
     var fatDist = fatDistributionStream()
-        .pipe(gulp.dest('example/scripts'))
+        .pipe(gulp.dest(paths.examples+'/scripts'))
         .pipe(rename('../../scripts/threejs-billiard.fat.min.js'));
 
     var appJs = helperJsResourcesStream()
-        .pipe(gulp.dest('example/scripts'))
+        .pipe(gulp.dest(paths.examples+'/scripts'))
         .pipe(rename('../../scripts/app.js'));
 
     var cssStream = gulp.src(['app/styles/**/*.css'])
         .pipe(concat('main.css'))
-        .pipe(gulp.dest('example/styles'))
+        .pipe(gulp.dest(paths.examples+'/styles'))
         .pipe(rename('../../styles/main.css'));
 
     return gulp.src('app/index.tpl.html')
@@ -92,12 +98,12 @@ gulp.task('prepare-example', function() {
             sort: ensureAppJsLastLoadedComparator // ensure that app.js is the last file to include
         }))
         .pipe(rename('index.html'))
-        .pipe(gulp.dest('example'));
+        .pipe(gulp.dest(paths.examples));
 });
 
 gulp.task('copy-images-to-example', function() {
     return gulp.src('app/images/**/*.jpg')
-        .pipe(gulp.dest('example/images'));
+        .pipe(gulp.dest(paths.examples+'/images'));
 });
 
 /**
@@ -109,12 +115,12 @@ gulp.task('copy-images-to-example', function() {
  */
 
 function preMinifiedDependenciesStream() {
-    return gulp.src(['app/lib/**/*.min.js'])
+    return gulp.src([paths.lib+'/**/*.min.js'])
         .pipe(concat('pre-minified-deps.min.js'));
 }
 
 function dependenciesToMinifyStream() {
-    return gulp.src(['app/lib/**/*.js', '!app/lib/**/*.min.js'])
+    return gulp.src([paths.lib+'/**/*.js', '!'paths.lib+'/**/*.min.js'])
         .pipe(concat('deps-to-minify.min.js'));
 }
 
@@ -194,20 +200,20 @@ function ensureAppJsLastLoadedComparator(a, b) {
 
 gulp.task('pre-min-deps', ['clean'], function() {
     return preMinifiedDependenciesStream()
-        .pipe(gulp.dest('debug/pre-min-deps'));
+        .pipe(gulp.dest(paths.debug+'/pre-min-deps'));
 });
 
 gulp.task('min-deps', ['clean'], function() {
     return minifiedDependenciesStream()
-        .pipe(gulp.dest('debug/min-deps'));
+        .pipe(gulp.dest(paths.debug+'/min-deps'));
 });
 
 gulp.task('min-code', ['clean'], function() {
     return minifiedJsResourcesStream()
-        .pipe(gulp.dest('debug/min-code'));
+        .pipe(gulp.dest(paths.debug+'/min-code'));
 });
 
 gulp.task('deps-to-min', ['clean'], function() {
     return dependenciesToMinifyStream()
-        .pipe(gulp.dest('debug/deps-to-min'));
+        .pipe(gulp.dest(paths.debug+'/deps-to-min'));
 });
