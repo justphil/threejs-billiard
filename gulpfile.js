@@ -134,13 +134,7 @@ function minifiedDependenciesStream() {
 function minifiedJsResourcesStream() {
   // To a certain extend we need to ensure a specific loading order.
   // We can do it better in the future by using e.g. Browserify.
-  return gulp.src([
-      'app/scripts/basics/foundation.js',
-      'app/scripts/basics/**/*.js',
-      'app/scripts/game/helpers/coords_rotation_helper.js',
-      'app/scripts/**/*.js',
-      '!app/scripts/app.js'
-    ])
+  return gulp.src(paths.src)
     .pipe(concat('threejs-billiard.min.js'))
     .pipe(uglify());
 }
