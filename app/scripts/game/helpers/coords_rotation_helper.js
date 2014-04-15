@@ -1,4 +1,4 @@
-(function(W, Hooray) {
+module.exports = (function() {
     "use strict";
 
     function rotateCoords(x, y, sin, cos, reverse) {
@@ -8,6 +8,8 @@
         };
     }
 
-    Hooray.define('Billiard', 'Helper.CoordsRotationHelper', 'rotateCoords', rotateCoords);
+    return {
+        rotateCoords: rotateCoords
+    };
 
-})(window, Hooray);
+})();

@@ -1,7 +1,7 @@
-(function(W, Hooray) {
+module.exports = (function(Hooray) {
     "use strict";
 
-    Hooray.defineClass('', '', 'PubSub', {
+    return Hooray.Class({
         init: function() {
             // hash of arrays of callback functions
             this.topics = {};
@@ -50,7 +50,7 @@
                     // prevent mutable variable i to be accessible from closure by using IIFE
                     (function() {
                         var callbackFn = t[i];
-                        W.setTimeout(function() {
+                        setTimeout(function() {
                             callbackFn.apply(that, args.slice(1));
                         }, 0);
                     })();
@@ -75,4 +75,4 @@
             return obj;
         }
     });
-})(window, Hooray);
+})(require('./foundation'));

@@ -1,15 +1,15 @@
-(function(W, Hooray) {
+module.exports = (function(Hooray, Logger, THREE, Q, Detector, AssetLoader, RotationHelper) {
     "use strict";
 
-    Hooray.defineClass('Billiard', '', 'GameRenderEngine', {
+    return Hooray.Class({
         init: function(gameContainerId) {
-            Hooray.log('A new Billiard.GameRenderEngine instance has been created within "'+gameContainerId+'"!');
+            Logger.log('A new Billiard.GameRenderEngine instance has been created within "'+gameContainerId+'"!');
 
             // init gameContainer
             this.gameContainer = this.initGameContainer(gameContainerId);
 
             // init asset loader
-            this.assetLoader = new Billiard.AssetLoader();
+            this.assetLoader = new AssetLoader();
 
             // init renderer
             this.renderer = this.initRenderer(this.gameContainer);
@@ -28,7 +28,6 @@
         initGameRenderEngine: function(table, balls, cues, pockets) {
             var that = this;
             var ballId, cueId, pocketId, geometry, material, sphere, plane, pocket, line, circle;
-            var rh = Billiard.Helper.RotationHelper;
 
             var promises = [];
 
@@ -55,7 +54,7 @@
                         sphere.position.y = balls[ballId].initY;
 
                         // adjust rotation because the textures has got a particular offset
-                        rh.rotateAroundWorldAxisY(sphere, -Math.PI/2);
+                        RotationHelper.rotateAroundWorldAxisY(sphere, -Math.PI/2);
 
                         that.scene.add(sphere);
 
@@ -171,7 +170,7 @@
         },
 
         initGameContainer: function(gameContainerId) {
-            var gameContainer = W.document.getElementById(gameContainerId);
+            var gameContainer = document.getElementById(gameContainerId);
             return {
                 domElement: gameContainer,
                 width: gameContainer.offsetWidth,
@@ -205,7 +204,7 @@
             camera.position.z = 400;
             scene.add(camera);
 
-            Hooray.log(
+            Logger.log(
                 'Initializing camera! [left, right, top, bottom, near, far]',
                 left, right, top, bottom, near, far
             );
@@ -223,4 +222,12 @@
         }
     });
 
-})(window, Hooray);
+})(
+    require('../basics/foundation'),
+    require('../basics/log'),
+    require('three'),
+    require('q'),
+    require('detector'),
+    require('../infrastructure/asset_loader'),
+    require('./helpers/rotation_helper')
+);

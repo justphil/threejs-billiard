@@ -1,11 +1,11 @@
-(function(W, Hooray) {
+module.exports = (function(Hooray, Logger, THREE, MouseInput, TargetGuide) {
     "use strict";
 
-    Hooray.defineClass('Billiard', '', 'Cue', {
+    return Hooray.Class({
         init: function(playerId, table) {
             this.id = 'cue_' + playerId;
             this.table = table;
-            Hooray.log('A new Billiard.Cue instance has been created with id "'+this.id+'"!');
+            Logger.log('A new Billiard.Cue instance has been created with id "'+this.id+'"!');
 
             this.controlRadius = 270;
 
@@ -13,7 +13,7 @@
 
             this.distanceTopLeftToBottomRight = 0;
 
-            this.targetGuide = new Billiard.TargetGuide();
+            this.targetGuide = new TargetGuide();
 
             /**
              * !!!
@@ -37,7 +37,7 @@
                 var bottomRight = new THREE.Vector2( val.width/2, -val.height/2 );
                 that.distanceTopLeftToBottomRight = topLeft.distanceTo(bottomRight);
 
-                Hooray.Input.Mouse.registerClickHandler(val.domElement, function() {
+                MouseInput.registerClickHandler(val.domElement, function() {
                     var angle = that.mesh.rotation.z;
                     that.ball0.vX = 20 * Math.cos(angle);
                     that.ball0.vY = 20 * Math.sin(angle);
@@ -68,11 +68,17 @@
                 );
             }
             else {
-                this.mouse = Hooray.Input.Mouse.capture(this.gameContainer.domElement);
+                this.mouse = MouseInput.capture(this.gameContainer.domElement);
             }
         },
 
-        browserCoordsToThreeCoords: Hooray.Input.Mouse.browserCoordsToThreeCoords
+        browserCoordsToThreeCoords: MouseInput.browserCoordsToThreeCoords
     });
 
-})(window, Hooray);
+})(
+    require('../basics/foundation'),
+    require('../basics/log'),
+    require('three'),
+    require('../basics/input'),
+    require('./billiard_target_guide')
+);

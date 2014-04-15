@@ -1,7 +1,5 @@
-(function(W, Hooray) {
+module.exports = (function(THREE, CoordsRotationHelper) {
     "use strict";
-
-    var crh = Billiard.Helper.CoordsRotationHelper;
 
     var helperVectors = {
         p0: new THREE.Vector2(0, 0),
@@ -81,9 +79,9 @@
             cos = Math.cos(angle),
             e = coefficientOfRestitution,
         // rotate ball0's velocity
-            vel0 = crh.rotateCoords(vX1, vY1, sin, cos, true),
+            vel0 = CoordsRotationHelper.rotateCoords(vX1, vY1, sin, cos, true),
         // rotate ball1's velocity
-            vel1 = crh.rotateCoords(vX2, vY2, sin, cos, true);
+            vel1 = CoordsRotationHelper.rotateCoords(vX2, vY2, sin, cos, true);
 
         // apply conservation of momentum
         var tmp = 1 / (m1 + m2);
@@ -116,8 +114,8 @@
         }
 
         // rotate velocities back
-        var vel0F = crh.rotateCoords(newVxBall0, vel0.y, sin, cos, false),
-            vel1F = crh.rotateCoords(newVxBall1, vel1.y, sin, cos, false);
+        var vel0F = CoordsRotationHelper.rotateCoords(newVxBall0, vel0.y, sin, cos, false),
+            vel1F = CoordsRotationHelper.rotateCoords(newVxBall1, vel1.y, sin, cos, false);
 
         returnObj.vX1 = vel0F.x;
         returnObj.vY1 = vel0F.y;
@@ -147,6 +145,9 @@
         return (angle % (Math.PI/2)) !== 0;
     }
 
-    Hooray.define('Billiard', 'Helper.CollisionHelper', 'getCollisionTime', getCollisionTime);
-    Hooray.define('Billiard', 'Helper.CollisionHelper', 'calculateBallCollisionReaction', calculateBallCollisionReaction);
-})(window, Hooray);
+    return {
+        getCollisionTime: getCollisionTime,
+        calculateBallCollisionReaction: calculateBallCollisionReaction
+    };
+
+})(require('three'), require('./coords_rotation_helper'));

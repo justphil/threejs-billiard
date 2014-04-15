@@ -1,9 +1,9 @@
-(function(W, Hooray) {
+module.exports = (function(Hooray, Logger, Events, DropState_Phase1, RotationHelper, CollisionHelper) {
     "use strict";
 
-    Hooray.defineClass('Billiard', '', 'Ball', {
+    return Hooray.Class({
         init: function(id, initX, initY, radius, mass, pubSub) {
-            Hooray.log('A new Billiard.Ball instance has been created with id "'+id+'"!');
+            Logger.log('A new Billiard.Ball instance has been created with id "'+id+'"!');
 
             this.id     = id;
             this.initX  = initX;
@@ -22,17 +22,14 @@
             this.pocketDropState = null;
 
             /*if (id === 'images/ball0.jpg') {
-                this.mass = 5;
-                this.vX = 24;
-                this.vY = 0;
-            }*/
+             this.mass = 5;
+             this.vX = 24;
+             this.vY = 0;
+             }*/
 
 
             this.vAngular   = 0;
             this.vAngularZ  = 0;
-
-            this.rotationHelper = Billiard.Helper.RotationHelper;
-            this.collisionHelper = Billiard.Helper.CollisionHelper;
 
             this.pubSub = pubSub;
 
@@ -56,8 +53,8 @@
 
                 // apply perfect ball rotation/rolling
                 // aka angular velocity perfectly corresponds to distance travelled
-                this.rotationHelper.rotateAroundWorldAxisX(this.mesh, (-this.vY * fraction) / this.radius);
-                this.rotationHelper.rotateAroundWorldAxisY(this.mesh, (this.vX * fraction) / this.radius);
+                RotationHelper.rotateAroundWorldAxisX(this.mesh, (-this.vY * fraction) / this.radius);
+                RotationHelper.rotateAroundWorldAxisY(this.mesh, (this.vX * fraction) / this.radius);
             }
             else {
                 // here the ball is still sliding and due to sliding friction it progressively starts to rotate
@@ -72,8 +69,8 @@
                 // apply torque, calculate the resulting angular acceleration and add it to angular velocity
                 this.applyTorque(friction);
 
-                this.rotationHelper.rotateAroundWorldAxisX(this.mesh, -this.vAngular * Math.sin(vAngle));
-                this.rotationHelper.rotateAroundWorldAxisY(this.mesh, this.vAngular * Math.cos(vAngle));
+                RotationHelper.rotateAroundWorldAxisX(this.mesh, -this.vAngular * Math.sin(vAngle));
+                RotationHelper.rotateAroundWorldAxisY(this.mesh, this.vAngular * Math.cos(vAngle));
             }
 
             return friction + (currentVelocity * generalFrictionFactor);
@@ -84,7 +81,7 @@
             //var angularFriction = 0.0009;
             var angularFriction = 0.002;
             if (this.vAngularZ !== 0) {
-                this.rotationHelper.rotateAroundWorldAxisZ(this.mesh, this.vAngularZ);
+                RotationHelper.rotateAroundWorldAxisZ(this.mesh, this.vAngularZ);
 
                 if (this.vAngularZ > 0) {
                     if ((this.vAngularZ - angularFriction) < 0) {
@@ -134,7 +131,7 @@
 
                 if (v !== vBefore) {
                     this.pubSub.publish(
-                        Billiard.Event.BALL_STOPPED_ROLLING,
+                        Events.BALL_STOPPED_ROLLING,
                         {
                             id: that.id,
                             x: that.mesh.position.x,
@@ -145,14 +142,14 @@
             }
 
             /*
-            if (Math.abs(this.vX) < stopThreshold) {
-                this.vX = 0;
-            }
+             if (Math.abs(this.vX) < stopThreshold) {
+             this.vX = 0;
+             }
 
-            if (Math.abs(this.vY) < stopThreshold) {
-                this.vY = 0;
-            }
-            */
+             if (Math.abs(this.vY) < stopThreshold) {
+             this.vY = 0;
+             }
+             */
         },
 
         applyTorque: function(absoluteFriction) {
@@ -224,14 +221,14 @@
 
             if (dist < pocket.radius) {
                 /*
-                this.containingPocket = pocket;
-                this.vX *= 0.1;
-                this.vY *= 0.1;
-                */
+                 this.containingPocket = pocket;
+                 this.vX *= 0.1;
+                 this.vY *= 0.1;
+                 */
 
                 console.log('Ball "' + this.id + '" is about to drop into pocket "' + pocket.id + '".');
 
-                this.pocketDropState = new Billiard.Pocket.DropState.Phase1(this, pocket);
+                this.pocketDropState = new DropState_Phase1(this, pocket);
 
                 returnVal = true;
             }
@@ -250,7 +247,7 @@
             // x1, y1, vX1, vY1, r1, m1,
             // x2, y2, vX2, vY2, r2, m2,
             // coefficientOfRestitution
-            var collisionReactionalChanges = this.collisionHelper.calculateBallCollisionReaction(
+            var collisionReactionalChanges = CollisionHelper.calculateBallCollisionReaction(
                 ball0.x, ball0.y, this.vX, this.vY, this.radius, this.mass,
                 ball1.x, ball1.y, anotherBall.vX, anotherBall.vY, anotherBall.radius, anotherBall.mass,
                 1
@@ -270,11 +267,18 @@
             var thisBallPos     = this.mesh.position,
                 anotherBallPos  = anotherBall.mesh.position;
 
-            return this.collisionHelper.getCollisionTime(
+            return CollisionHelper.getCollisionTime(
                 thisBallPos.x, thisBallPos.y, this.vX, this.vY, this.radius,
                 anotherBallPos.x, anotherBallPos.y, anotherBall.vX, anotherBall.vY, anotherBall.radius
             );
         }
     });
 
-})(window, Hooray);
+})(
+        require('../basics/foundation'),
+        require('../basics/log'),
+        require('./events/events'),
+        require('./drop_states/phase1'),
+        require('./helpers/rotation_helper'),
+        require('./helpers/collision_helper')
+);

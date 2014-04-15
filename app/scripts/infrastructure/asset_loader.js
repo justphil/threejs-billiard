@@ -1,9 +1,9 @@
-(function(W, Hooray) {
+module.exports = (function(Hooray, Logger, THREE, Q) {
     "use strict";
 
-    Hooray.defineClass('Billiard', '', 'AssetLoader', {
+    return Hooray.Class({
         init: function() {
-            Hooray.log('A new Billiard.AssetLoader instance has been created!');
+            Logger.log('A new Billiard.AssetLoader instance has been created!');
 
             this.maps = {}; // url -> texture map
             this.textureLoader = new THREE.TextureLoader();
@@ -20,18 +20,18 @@
 
 
                 onLoad = function(content) {
-                    Hooray.log('[Billiard.AssetLoader] Texture "'+url+'" loaded.');
+                    Logger.log('[Billiard.AssetLoader] Texture "'+url+'" loaded.');
                     that.maps[url] = content;
                     deferred.resolve(content);
                 };
 
                 onProgress = function(progress) {
-                    Hooray.log('[Billiard.AssetLoader] Loading texture "'+url+'"...', progress);
+                    Logger.log('[Billiard.AssetLoader] Loading texture "'+url+'"...', progress);
                     deferred.notify(progress);
                 };
 
                 onError= function(message) {
-                    Hooray.log('[Billiard.AssetLoader] Error while loading texture "'+url+'".');
+                    Logger.log('[Billiard.AssetLoader] Error while loading texture "'+url+'".');
                     deferred.reject(message);
                 };
 
@@ -42,7 +42,7 @@
                 return deferred.promise;
             }
             else {
-                Hooray.log('[Billiard.AssetLoader] Returning cached texture "'+url+'".');
+                Logger.log('[Billiard.AssetLoader] Returning cached texture "'+url+'".');
                 return Q.when(this.maps[url]);
             }
         },
@@ -68,4 +68,4 @@
             });
         }
     });
-})(window, Hooray);
+})(require('../basics/foundation'), require('../basics/log'), require('three'), require('q'));

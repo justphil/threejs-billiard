@@ -1,9 +1,9 @@
-(function(W, Hooray) {
+module.exports = (function(Hooray, Logger) {
     "use strict";
 
-    Hooray.defineClass('Billiard', 'Table', 'Default', {
+    return Hooray.Class({
         init: function(playingFieldWidth, playingFieldHeight) {
-            Hooray.log('A new Billiard.Table.Default instance has been created!');
+            Logger.log('A new Billiard.Table.Default instance has been created!');
             this.playingFieldWidth  = playingFieldWidth;
             this.playingFieldHeight = playingFieldHeight;
             this.backgroundTexture  = 'images/table_default.png';
@@ -65,4 +65,4 @@
         }
     });
 
-})(window, Hooray);
+})(require('../../basics/foundation'), require('../../basics/log'));

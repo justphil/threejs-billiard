@@ -1,4 +1,4 @@
-(function(W, Hooray) {
+module.exports = (function() {
     "use strict";
 
     var doLog = true;
@@ -9,5 +9,7 @@
         }
     };
 
-    Hooray.define('', '', 'log', log);
-})(window, Hooray);
+    return {
+        log: log
+    }
+})();

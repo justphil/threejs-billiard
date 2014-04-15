@@ -1,9 +1,9 @@
-(function(W, Hooray) {
+module.exports = (function(Hooray, Logger) {
     "use strict";
 
-    Hooray.defineClass('Billiard', '', 'GameLoop', {
+    return Hooray.Class({
         init: function(gameRenderEngine, table, balls, cues, pockets) {
-            Hooray.log('A new Billiard.GameLoop instance has been created!');
+            Logger.log('A new Billiard.GameLoop instance has been created!');
             this.gameRenderEngine   = gameRenderEngine;
             this.table              = table;
             this.balls              = balls;
@@ -166,7 +166,7 @@
         start: function(renderFn) {
             var that = this;
             (function loop() {
-                that.timerId = W.requestAnimationFrame(loop);
+                that.timerId = requestAnimationFrame(loop);
                 that.mainGameLoop();
                 renderFn();
             })();
@@ -174,9 +174,9 @@
 
         stop: function() {
             if (!Hooray.isUndefined(this.timerId)) {
-                W.cancelAnimationFrame(this.timerId);
+                cancelAnimationFrame(this.timerId);
             }
         }
     });
 
-})(window, Hooray);
+})(require('../basics/foundation'), require('../basics/log'));

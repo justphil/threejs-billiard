@@ -1,18 +1,17 @@
-(function(W, Hooray) {
+module.exports = (function(Hooray, Logger, Events) {
     "use strict";
 
-    Hooray.defineClass('Billiard', 'Event', 'EventProcessor', {
+    return Hooray.Class({
         init: function(pubSub) {
-            Hooray.log('A new Billiard.Event.EventProcessor instance has been created!');
+            Logger.log('A new Billiard.Event.EventProcessor instance has been created!');
             this.pubSub = pubSub;
             this.registerHandlers(this.pubSub);
         },
 
         registerHandlers: function(pubSub) {
-            pubSub.subscribe(Billiard.Event.BALL_STOPPED_ROLLING, function(e) {
-                Hooray.log('[EventProcessor]', Billiard.Event.BALL_STOPPED_ROLLING, e);
+            pubSub.subscribe(Events.BALL_STOPPED_ROLLING, function(e) {
+                Logger.log('[EventProcessor]', Events.BALL_STOPPED_ROLLING, e);
             })
         }
     });
-
-})(window, Hooray);
+})(require('../../basics/foundation'), require('../../basics/log'), require('./events'));

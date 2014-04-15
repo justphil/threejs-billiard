@@ -1,10 +1,11 @@
-(function(W, Hooray) {
+module.exports = (function() {
     "use strict";
 
-    /* low level events */
-    Hooray.define('Billiard', 'Event', 'BALL_STOPPED_ROLLING', 'BALL_STOPPED_ROLLING');
-    Hooray.define('Billiard', 'Event', 'BALL_STARTED_ROLLING', 'BALL_STARTED_ROLLING');
-
-    /* high level events */
-
-})(window, Hooray);
+    return {
+        /* low level events */
+        BALL_STOPPED_ROLLING: 'BALL_STOPPED_ROLLING',
+        BALL_STARTED_ROLLING: 'BALL_STARTED_ROLLING'
+        /* high level events */
+        // will be here in the future
+    };
+})();

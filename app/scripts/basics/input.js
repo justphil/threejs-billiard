@@ -1,4 +1,4 @@
-(function(W, Hooray) {
+module.exports = (function() {
     "use strict";
 
     function capture(element) {
@@ -46,7 +46,9 @@
         return obj;
     }
 
-    Hooray.define('', 'Input.Mouse', 'capture', capture);
-    Hooray.define('', 'Input.Mouse', 'browserCoordsToThreeCoords', browserCoordsToThreeCoords);
-    Hooray.define('', 'Input.Mouse', 'registerClickHandler', registerClickHandler);
-})(window, Hooray);
+    return {
+        capture: capture,
+        registerClickHandler: registerClickHandler,
+        browserCoordsToThreeCoords: browserCoordsToThreeCoords
+    }
+})();

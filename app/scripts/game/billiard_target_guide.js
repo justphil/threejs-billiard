@@ -1,10 +1,9 @@
-(function(W, Hooray) {
+module.exports = (function(Hooray, Logger, CollisionHelper) {
     "use strict";
 
-    Hooray.defineClass('Billiard', '', 'TargetGuide', {
+    return Hooray.Class({
         init: function() {
-            Hooray.log('A new Billiard.TargetGuide instance has been created!');
-            this.collisionHelper = Billiard.Helper.CollisionHelper;
+            Logger.log('A new Billiard.TargetGuide instance has been created!');
 
             /**
              * !!!
@@ -56,7 +55,7 @@
                 // Parameters:
                 // x1, y1, vX1, vY1, r1,
                 // x2, y2, vX2, vY2, r2
-                t = this.collisionHelper.getCollisionTime(
+                t = CollisionHelper.getCollisionTime(
                     ball0Pos.x, ball0Pos.y, fakeVx, fakeVy, ball0.radius,
                     b.mesh.position.x, b.mesh.position.y, 0, 0, b.radius
                 );
@@ -80,7 +79,7 @@
                 // x1, y1, vX1, vY1, r1, m1,
                 // x2, y2, vX2, vY2, r2, m2,
                 // coefficientOfRestitution
-                collisionReactionalChanges = this.collisionHelper.calculateBallCollisionReaction(
+                collisionReactionalChanges = CollisionHelper.calculateBallCollisionReaction(
                     endX, endY, 80 * cosAngle, 80 * sinAngle, ball0.radius, ball0.mass,
                     anotherBallPos.x, anotherBallPos.y, anotherBall.vX, anotherBall.vY, anotherBall.radius, anotherBall.mass,
                     1
@@ -242,4 +241,4 @@
         }
     });
 
-})(window, Hooray);
+})(require('../basics/foundation'), require('../basics/log'), require('./helpers/collision_helper'));

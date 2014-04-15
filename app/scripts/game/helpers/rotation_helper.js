@@ -1,4 +1,4 @@
-(function(W, Hooray) {
+module.exports = (function(THREE) {
     "use strict";
 
     var helperQuaternion        = new THREE.Quaternion(),
@@ -23,8 +23,10 @@
         rotateAroundWorldAxis(object, normalizedXAxisVector, radians);
     }
 
-    Hooray.define('Billiard', 'Helper.RotationHelper', 'rotateAroundWorldAxisZ', rotateAroundWorldAxisZ);
-    Hooray.define('Billiard', 'Helper.RotationHelper', 'rotateAroundWorldAxisY', rotateAroundWorldAxisY);
-    Hooray.define('Billiard', 'Helper.RotationHelper', 'rotateAroundWorldAxisX', rotateAroundWorldAxisX);
+    return {
+        rotateAroundWorldAxisZ: rotateAroundWorldAxisZ,
+        rotateAroundWorldAxisY: rotateAroundWorldAxisY,
+        rotateAroundWorldAxisX: rotateAroundWorldAxisX
+    };
 
-})(window, Hooray);
+})(require('three'));
