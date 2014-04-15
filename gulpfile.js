@@ -6,6 +6,8 @@ var gulp = require('gulp'),
     inject = require('gulp-inject'),
     rename = require('gulp-rename'),
     uglify = require('gulp-uglify'),
+    source = require('vinyl-source-stream'),
+    browserify = require('browserify'),
     es = require('event-stream'),
     component = require('./package.json');
 
@@ -71,6 +73,24 @@ gulp.task('dist', ['clean', 'lean-dist', 'fat-dist']);
  *
  */
 gulp.task('example', ['clean', 'prepare-example', 'copy-images-to-example']);
+
+/**
+ *
+ * Browserify Task
+ *
+ */
+gulp.task('bundle-scripts', ['clean'], function () {
+
+
+    return browserify('./app/scripts/app.js').bundle()
+        .pipe(source('bundle.js'))
+        .pipe(gulp.dest('bundle'));
+
+    /*return gulp.src(CONFIG.SRC + '/index.tpl.html')
+        .pipe(inject(browserifyBundle, { addRootSlash: false }))
+        .pipe(rename('index.html'))
+        .pipe(gulp.dest(CONFIG.DIST));*/
+});
 
 /**
  *
