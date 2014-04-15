@@ -40,6 +40,17 @@
     "gulp-rename": "^1.2.0",
     "gulp-uglify": "^0.2.1",
     "event-stream": "^3.1.1",
-    "gulp-inject": "^0.4.1"
-  }
+    "gulp-inject": "^0.4.1",
+    "browserify": "^3.41.0",
+    "browserify-shim": "^3.4.1",
+    "vinyl-source-stream": "^0.1.1"
+  },
+    "browserify": {
+        "transform": [ "browserify-shim" ]
+    },
+    "browserify-shim": {
+        "three": "global:THREE",
+        "detector": "global:Detector",
+        "q": "global:Q"
+    }
 }
