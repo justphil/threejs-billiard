@@ -8,15 +8,12 @@ module.exports = function (config) {
 
 
         // frameworks to use
-        frameworks: ['jasmine'],
+        frameworks: ['jasmine', 'browserify'],
 
 
         // list of files / patterns to load in the browser
         files: [
-            'app/scripts/basics/foundation.js',
-            'app/scripts/basics/log.js',
-            'app/scripts/basics/pub_sub.js',
-            'test/unit/**/*.js'
+            // see: 'browserify' property
         ],
 
 
@@ -25,6 +22,17 @@ module.exports = function (config) {
 
         ],
 
+        // Files to browserify
+        browserify: {
+            files: [
+                "test/**/*.js"
+            ]
+        },
+
+        // Hopefully temporary hack
+        preprocessors: {
+            '/**/*.browserify': 'browserify'
+        },
 
         // test results reporter to use
         // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'

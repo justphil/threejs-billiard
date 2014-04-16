@@ -3,10 +3,11 @@
 describe('[Hooray PubSub]', function() {
 
     var pubSub,
-        testTopic = 'test';
+        testTopic = 'test',
+        PubSub = require('../../../app/scripts/basics/pub_sub');
 
     beforeEach(function() {
-        pubSub = new Hooray.PubSub();
+        pubSub = new PubSub();
     });
 
     describe('Public API', function() {
