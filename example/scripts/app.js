@@ -7,8 +7,10 @@
         new Billiard.DefaultTable(960, 480)
     );
 
+    var initGamePromise = game.prepare();
+
     window.onload = function() {
-        game.prepare().then(function() {
+        initGamePromise.then(function() {
             console.log('The game is completely set up and about to start!');
             game.start();
         });
