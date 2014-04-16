@@ -1,28 +1,26 @@
 "use strict";
 
-var gulp = require('gulp'),
-    clean = require('gulp-clean'),
-    concat = require('gulp-concat'),
-    inject = require('gulp-inject'),
-    rename = require('gulp-rename'),
-    uglify = require('gulp-uglify'),
-    source = require('vinyl-source-stream'),
-    browserify = require('browserify'),
-    es = require('event-stream'),
-    component = require('./package.json');
+var gulp        = require('gulp'),
+    clean       = require('gulp-clean'),
+    concat      = require('gulp-concat'),
+    inject      = require('gulp-inject'),
+    rename      = require('gulp-rename'),
+    uglify      = require('gulp-uglify'),
+    streamify   = require('gulp-streamify'),
+    browserify  = require('browserify'),
+    source      = require('vinyl-source-stream'),
+    series      = require('stream-series'),
+    component   = require('./package.json');
 
 var paths = {
-    dist: 'dist',
-    example: 'example',
-    lib: 'app/lib',
-    debug: 'debug',
-    src: [
-        'app/scripts/basics/foundation.js',
-        'app/scripts/basics/**/*.js',
-        'app/scripts/game/helpers/coords_rotation_helper.js',
-        'app/scripts/**/*.js',
-        '!app/scripts/app.js'
-    ]
+    umdName:        'ThreeJsBilliard',
+    entryPoint:     './app/scripts/' + component.name + '.js',
+    startHelper:    './app/helpers/start-' + component.name + '.js',
+    dist:           './dist',
+    example:        './example',
+    lib:            './app/lib',
+    images:         './app/images',
+    debug:          './debug'
 };
 
 /**
@@ -76,24 +74,6 @@ gulp.task('example', ['clean', 'prepare-example', 'copy-images-to-example']);
 
 /**
  *
- * Browserify Task
- *
- */
-gulp.task('bundle-scripts', ['clean'], function () {
-
-
-    return browserify('./app/scripts/app.js').bundle()
-        .pipe(source('bundle.js'))
-        .pipe(gulp.dest('bundle'));
-
-    /*return gulp.src(CONFIG.SRC + '/index.tpl.html')
-        .pipe(inject(browserifyBundle, { addRootSlash: false }))
-        .pipe(rename('index.html'))
-        .pipe(gulp.dest(CONFIG.DIST));*/
-});
-
-/**
- *
  *
  * Helper tasks
  *
@@ -115,16 +95,15 @@ gulp.task('prepare-example', function () {
         .pipe(rename('../../styles/main.css'));
 
     return gulp.src('app/index.tpl.html')
-        .pipe(inject(es.merge(fatDist, appJs, cssStream), {
-            addRootSlash: false,
-            sort: ensureAppJsLastLoadedComparator // ensure that app.js is the last file to include
+        .pipe(inject(series(cssStream, fatDist, appJs), {
+            addRootSlash: false
         }))
         .pipe(rename('index.html'))
         .pipe(gulp.dest(paths.example));
 });
 
 gulp.task('copy-images-to-example', function () {
-    return gulp.src('app/images/**/*.jpg')
+    return gulp.src(paths.images + '/**/*.jpg')
         .pipe(gulp.dest(paths.example + '/images'));
 });
 
@@ -147,22 +126,29 @@ function dependenciesToMinifyStream() {
 }
 
 function minifiedDependenciesStream() {
-    return es.merge(
-        preMinifiedDependenciesStream(),
-        dependenciesToMinifyStream().pipe(uglify())
+    /**
+     * We have to ensure that Q is copied before Three.js because Three.js sets "use strict" globally
+     * and unfortunately that hurts Q. :-/ (Need to create a PR for Three.js to fix this!)
+     */
+    return series(
+        dependenciesToMinifyStream().pipe(uglify()),
+        preMinifiedDependenciesStream()
     ).pipe(concat('all-deps.min.js'));
 }
 
+function browserifiedBundleStream() {
+    return browserify(paths.entryPoint).bundle({standalone: paths.umdName}) // bundle it as an UMD module
+        .pipe(source(component.name + '.js'));
+}
+
 function minifiedJsResourcesStream() {
-    // To a certain extend we need to ensure a specific loading order.
-    // We can do it better in the future by using e.g. Browserify.
-    return gulp.src(paths.src)
-        .pipe(concat(component.name + '.min.js'))
-        .pipe(uglify());
+    return browserifiedBundleStream()
+        .pipe(streamify(uglify())) // use streamify() to make uglify() support streams
+        .pipe(rename(component.name + '.min.js'));
 }
 
 function helperJsResourcesStream() {
-    return gulp.src(['app/scripts/app.js'])
+    return gulp.src([paths.startHelper])
         .pipe(concat('app.js'));
 }
 
@@ -171,39 +157,10 @@ function leanDistributionStream() {
 }
 
 function fatDistributionStream() {
-    return es.merge(
+    return series(
         minifiedDependenciesStream(),
         minifiedJsResourcesStream()
-    ).pipe(concat(component.name + '.fat.min.js'));
-}
-
-/**
- *
- *
- * Other helper functions
- *
- *
- */
-
-function ensureAppJsLastLoadedComparator(a, b) {
-    if (/app.js/.test(a.filepath)) {
-        return 1;
-    }
-    else if (/app.js/.test(b.filepath)) {
-        return -1;
-    }
-    else if (/app.js/.test(a.filepath) && /app.js/.test(b.filepath)) {
-        return 0;
-    }
-    else {
-        if (a.filepath < b.filepath)
-            return -1;
-
-        if (a.filepath > b.filepath)
-            return 1;
-
-        return 0;
-    }
+    ).pipe(streamify(concat(component.name + '.fat.min.js')));
 }
 
 /**
@@ -222,6 +179,11 @@ gulp.task('pre-min-deps', ['clean'], function () {
 gulp.task('min-deps', ['clean'], function () {
     return minifiedDependenciesStream()
         .pipe(gulp.dest(paths.debug + '/min-deps'));
+});
+
+gulp.task('browserify-code', ['clean'], function () {
+    return browserifiedBundleStream()
+        .pipe(gulp.dest(paths.debug + '/browserify-code'));
 });
 
 gulp.task('min-code', ['clean'], function () {

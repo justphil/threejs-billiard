@@ -2,7 +2,7 @@
   "name": "threejs-billiard",
   "version": "0.0.1",
   "description": "A billiard ball physics simulator based on three.js",
-  "main": "./app/index.html",
+  "main": "./app/scripts/threejs-billiard.js",
   "directories": {
     "test": "test"
   },
@@ -39,18 +39,21 @@
     "gulp-concat": "^2.2.0",
     "gulp-rename": "^1.2.0",
     "gulp-uglify": "^0.2.1",
-    "event-stream": "^3.1.1",
     "gulp-inject": "^0.4.1",
+    "gulp-streamify": "0.0.5",
     "browserify": "^3.41.0",
     "browserify-shim": "^3.4.1",
-    "vinyl-source-stream": "^0.1.1"
+    "vinyl-source-stream": "^0.1.1",
+    "stream-series": "^0.1.0"
   },
-    "browserify": {
-        "transform": [ "browserify-shim" ]
-    },
-    "browserify-shim": {
-        "three": "global:THREE",
-        "detector": "global:Detector",
-        "q": "global:Q"
-    }
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "three": "global:THREE",
+    "detector": "global:Detector",
+    "q": "global:Q"
+  }
 }
