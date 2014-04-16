@@ -3,9 +3,9 @@
 var gulp        = require('gulp'),
     clean       = require('gulp-clean'),
     concat      = require('gulp-concat'),
-    inject      = require('gulp-inject'),
-    rename      = require('gulp-rename'),
     uglify      = require('gulp-uglify'),
+    rename      = require('gulp-rename'),
+    inject      = require('gulp-inject'),
     streamify   = require('gulp-streamify'),
     browserify  = require('browserify'),
     source      = require('vinyl-source-stream'),
@@ -128,7 +128,7 @@ function dependenciesToMinifyStream() {
 function minifiedDependenciesStream() {
     /**
      * We have to ensure that Q is copied before Three.js because Three.js sets "use strict" globally
-     * and unfortunately that hurts Q. :-/ (Need to create a PR for Three.js to fix this!)
+     * and unfortunately this hurts Q. :-/ (Need to create a PR for Three.js to fix it!)
      */
     return series(
         dependenciesToMinifyStream().pipe(uglify()),
